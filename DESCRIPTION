@@ -1,0 +1,12 @@
+Package: examiner
+Title: Create exams
+Version: 0.0.1
+Authors@R: "Jeffrey B. Arnold <jeffrey.arnold@gmail.com> [aut, cre]"
+Description: Functions to generate multiple choice exam questions.
+Depends:
+    R (>= 3.1.0)
+Imports:
+    yaml,
+    stringr
+License: GPL-3
+LazyData: true
