@@ -8,5 +8,6 @@ Depends:
 Imports:
     yaml,
     stringr
+VignetteBuilder: knitr
 License: GPL-3
 LazyData: true

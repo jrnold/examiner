@@ -1,0 +1,75 @@
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{knitr}
+\documentclass{article}
+
+\title{Examiner Package}
+\author{Jeffrey B. Arnold}
+
+\usepackage{hyperref}
+
+<<echo = FALSE,results = 'hide'>>=
+options(width = 40)
+knitr::opts_chunk[["set"]](tidy = FALSE)
+@ 
+<<results = 'asis', echo = FALSE>>=
+cat(examiner::examiner_latex_header())
+@ 
+%% \usepackage{amsmath,amsthm}
+%% \theoremstyle{definition}
+%% \newtheorem{problem}{Problem}
+%% \newenvironment{problemtext}{\par}{}
+%% \newenvironment{problems}{\par}{}
+%% \newenvironment{problemset}{\par}{}
+%% \newenvironment{problemsettext}{\par}{}
+%% \usepackage{enumitem}
+%% \newlist{answers}{enumerate}{1}
+%% \setlist[answers]{label=(\arabic*)}
+
+\begin{document}
+\maketitle{}
+
+
+Problems are stored in a \href{http://www.yaml.org/}{yaml} file.
+Yaml is a compromise between a human and computer readable format. 
+An example questions file is included with the package (\texttt{example/questions.yaml}) and looks like this,
+<<results = 'markup', highlight = FALSE, comment = "", echo = FALSE>>=
+library("examiner")
+library("stringr")
+cat(str_c(readLines(system.file("example/questions.yaml", 
+                                package = "examiner"), 26),
+          collapse = "\n"))
+                                               
+@ 
+
+The yaml file converted into a \verb|problemset| object with the function \verb|problemset_from_yaml|.
+<<echo = TRUE, results = 'asis'>>=
+library("examiner")
+problems <- 
+    problemset_from_yaml(system.file("example/questions.yaml", 
+                                     package = "examiner"))
+
+@ 
+
+The problem \texttt{problemset} object which can be rendered into \LaTeX{} using \texttt{format},
+<<echo = TRUE, results = 'asis'>>=
+cat(format(problems))
+@ 
+The raw \LaTeX{} looks like this,
+<<echo = FALSE, results = 'markup', highlight = FALSE, comment = "">>=
+cat(format(problems))
+@ 
+
+Note that the rendering encloses the output in the environments \texttt{problemset}, \texttt{problemsettext} \texttt{problems}, \texttt{problem}, \texttt{problemtext}, and \texttt{answers}.
+These environments can be redefined to change their style in the document without changing the definitions of functions in \textbf{examiner}, because this isn't Microsoft Word and that's how Donald Knuth would want me to do it.
+This document used the defaults included in this package.
+<<>>=
+cat(examiner_latex_header())
+@ 
+I included a call to \verb|examiner_latex_header| is placed in a knitr chunk in the document preamble (see source).
+
+To shuffle the questions, set the \texttt{format} option \texttt{randomize = TRUE},
+<<echo = TRUE, results = 'asis'>>=
+cat(format(problems, randomize = TRUE))
+@ 
+
+\end{document}

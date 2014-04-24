@@ -1,5 +1,7 @@
 S3method(format,problem)
 S3method(format,problemset)
+export(examiner_latex_header)
+export(opts_examiner)
 export(problem)
 export(problemset)
 export(problemset_from_yaml)
