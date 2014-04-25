@@ -1,0 +1,102 @@
+---
+text: "Who would cross the Bridge of Death must answer me these questions three, 'ere the other side he see."
+problems:
+  - text: What is your name?
+    correct: 1
+    answers:
+      - Sir Launcelot of Camelot
+      - Arthur, King of the Britons
+      - Sir Robin of Camelot
+      - Sir Bedevere
+      - Sir Galahad of Camelot
+  - text: What is your quest?
+    correct: 1
+    answers:
+      - To seek the Holy Grail
+      - To kill ferocious bunnies
+      - To develop silly walks
+      - To find the meaning of life
+  - text: What is your favorite color?
+    correct: 1
+    answers:
+      - blue
+      - green
+      - red
+      - yellow
+      - purple
+# - text: Answer these questions Sir Robin of Camelot.
+#       questions:
+#         - text: What is your name?
+#           solution: 4
+#           answers:
+#             - Sir Launcelot of Camelot
+#             - Arthur, King of the Britons
+#             - Patsy
+#             - Sir Robin of Camelot
+#             - Sir Bedevere
+#             - Sir Galahad of Camelot
+#         - text: What is your quest?
+#           solution: 1
+#           answers:
+#             - To seek the Holy Grail
+#             - To kill ferocious bunnies
+#             - To develop silly walks
+#             - To find the meaning of life
+#         - text: What is the capital of Assyria? 
+#           solution: 1
+#           answers:
+#             - Ninevah
+#             - Jerusalem
+#             - Paris
+#             - Damascus
+#             - "I don't know that!"
+# - text: "Answer these questions, Sir Galahad of Camelot"
+#   questions:
+#     - text: What is your name?
+#       solution: 5
+#       answers:
+#         - Sir Launcelot of Camelot
+#         - Arthur, King of the Britons
+#         - Sir Robin of Camelot
+#         - Sir Bedevere
+#         - Sir Galahad of Camelot
+#     - text: What is your quest?
+#       solution: 1
+#       answers:
+#         - To seek the Holy Grail
+#         - To kill ferocious bunnies
+#         - To develop silly walks
+#         - To find the meaning of life
+#     - text: What your favorite color?
+#       solution: 4
+#       answers:
+#         - blue
+#         - green
+#         - red
+#         - yellow
+#         - purple
+# - text: "Answer these questions, Arthur, King of the Britons"
+#   questions:
+#     - text: What is your name?
+#       solution: 2
+#       answers:
+#         - Sir Launcelot of Camelot
+#         - Arthur, King of the Britons
+#         - Sir Robin of Camelot
+#         - Sir Bedevere
+#         - Sir Galahad of Camelot
+#     - text: What is your quest?
+#       solution: 1
+#       answers:
+#         - To seek the Holy Grail
+#         - To kill ferocious bunnies
+#         - To develop silly walks
+#         - To find the meaning of life
+#     - text: What is the airspeed of an unladen swallow?
+#       solution: 5
+#       answers:
+#         - 25 mph
+#         - 20 mph
+#         - 30 mph
+#         - 40 mph
+#         - "African or European?"

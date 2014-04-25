@@ -2,12 +2,12 @@
 \alias{problem}
 \title{Create a problem object}
 \usage{
-problem(x, answers, correct = 1L, first = 0L, last = 0L,
-  randomizable = TRUE)
+problem(text = "", answers = character(), solution = "", correct = 1L,
+  first = 0L, last = 0L, randomizable = TRUE)
 }
 \arguments{
-  \item{x}{\code{character} vector with the prompt for the
-  problem.}
+  \item{text}{\code{character} vector with the prompt for
+  the problem.}
 
   \item{answers}{A \code{list} of \code{problem} or
   \code{problemset} objects.}
@@ -28,4 +28,5 @@ An object of class \code{problem}.
 \description{
 Create a problem object
 }
+\keyword{internal}
 

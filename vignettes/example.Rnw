@@ -36,7 +36,7 @@ An example questions file is included with the package (\texttt{example/question
 library("examiner")
 library("stringr")
 cat(str_c(readLines(system.file("example/questions.yaml", 
-                                package = "examiner"), 26),
+                                package = "examiner")),
           collapse = "\n"))
                                                
 @ 
@@ -59,7 +59,7 @@ The raw \LaTeX{} looks like this,
 cat(format(problems))
 @ 
 
-Note that the rendering encloses the output in the environments \texttt{problemset}, \texttt{problemsettext} \texttt{problems}, \texttt{problem}, \texttt{problemtext}, and \texttt{answers}.
+Note that the rendering encloses the output in the environments \texttt{problemset}, \texttt{problemsetpretext}, \texttt{problemsetposttext}, \texttt{problems}, \texttt{problem}, \texttt{problemtext}, and \texttt{answers}.
 These environments can be redefined to change their style in the document without changing the definitions of functions in \textbf{examiner}, because this isn't Microsoft Word and that's how Donald Knuth would want me to do it.
 This document used the defaults included in this package.
 <<>>=

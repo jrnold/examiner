@@ -1,6 +1,6 @@
 \name{problemset_from_yaml}
 \alias{problemset_from_yaml}
-\title{Create problemset from yaml file}
+\title{Create problemset from a yaml file}
 \usage{
 problemset_from_yaml(input)
 }
@@ -11,6 +11,6 @@ problemset_from_yaml(input)
 A \code{problemset} object.
 }
 \description{
-Create problemset from yaml file
+Create problemset from a yaml file
 }
 
