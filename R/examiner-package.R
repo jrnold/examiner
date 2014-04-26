@@ -14,7 +14,51 @@ ltxnewenv <- function(x, begin = "", end = "") {
     str_c("\\newenvironment{", x, "}{", begin, "}{", end, "}")
 }
 
-.EXAMINER_LATEX_HEADER <-
+#' Examiner Options
+#'
+#' This environment stores the options used in the \pkg{examiner} package.
+#' @export
+examiner_opts <- new.env(hash = TRUE)
+examiner_opts$tpl_problem <-
+    str_c("\\begin{problem}",
+          "\\begin{problemtext}",
+          "{{{text}}}",
+          "\\end{problemtext}",
+          "\\begin{answers}",
+          "{{{answers}}}",
+          "\\end{answers}",
+          "{{#show_solutions}}",
+          "\\begin{solution}",
+          "{{{solution}}}",
+          "\\end{solution}",
+          "{{/show_solutions}}",
+          "\\end{problem}", sep = "\n")
+
+examiner_opts$tpl_answers <-
+    str_c("{{#answers}}",
+          "\\item {{#show_solutions}}{{#correct}}**{{/correct}}{{/show_solutions}} {{{text}}}",
+          "{{/answers}}",
+          sep = "\n")
+
+
+examiner_opts$tpl_problemset <-
+    str_c(
+        "\\begin{problemset}",
+        "\\begin{problemsetpretext}",
+        "{{{problemsetpretext}}}",
+        "\\end{problemsetpretext}",
+        "\\begin{problems}",
+        "{{#problems}}",
+        "{{{.}}}",
+        "{{/problems}}",
+        "\\end{problems}",
+        "\\begin{problemsetpretext}",
+        "{{{problemsetpretext}}}",
+        "\\end{problemsetpretext}",
+        "\\end{problemset}",
+        sep = "\n")
+
+examiner_opts$latex_header <-
     c("\\usepackage{amsthm,amsmath,enumitem}",
       "\\theoremstyle{definition}\\newtheorem{problem}{Problem}",
       ltxnewenv("problemtext", "\\par", ""),
@@ -32,7 +76,7 @@ ltxnewenv <- function(x, begin = "", end = "") {
 #' @return A character vector with the header
 #' @export
 examiner_latex_header <- function() {
-    str_c(.EXAMINER_LATEX_HEADER, collapse = "\n")
+    str_c(examiner_opts[["latex_header"]], collapse = "\n")
 }
 
 
@@ -47,14 +91,13 @@ answerlist <- function(x) {
 }
 
 #' @export
-format.answerlist <- function(x, show_solutions = FALSE, ...) {
-    format_answer <- function(text, correct, ...) {
-        str_c("\\item", text, sep = " ")
-    }
-    str_c(maply(x, format_answer, .expand = FALSE, .drop = TRUE), 
-          collapse = "\n")
+format.answerlist <- function(answers, show_solutions = FALSE, ...) {
+    answers2 <- unname(rowSplit(answers))
+    whisker.render(examiner_opts[["tpl_answers"]],
+                   data = c(list(answers = answers2,
+                       show_solutions = show_solutions),
+                       list(...)))
 }
-
 
 #' Create a problem object
 #'
@@ -103,25 +146,16 @@ shuffle_answers <- function(x) {
     x
 }
 
-format_problem <- function(x, show_solutions = FALSE) {
-    str_c(beginenv("problem"),
-          beginenv("problemtext"),
-          str_c(x[["text"]], sep = "\n"),
-          endenv("problemtext"),
-          beginenv("answers"),
-          x[["answers"]],
-          endenv("answers"),
-          endenv("problem"),
-          sep = "\n")
-}
-
 #' @export
 format.problem <- function(x, randomize = FALSE, show_solutions = FALSE, ...) {
+    x <- as.list(x)
     if (x[["randomizable"]] && as.logical(randomize)) {
         x[["answers"]] <- shuffle_answers(x[["answers"]])
     }
-    x[["answers"]] <- format(x[["answers"]], show_solutions = show_solutions)
-    format_problem(x, show_solutions = show_solutions)
+    x[["answers"]] <- format(x[["answers"]], show_solutions = show_solutions, ...)
+    x[["show_solutions"]] <- show_solutions
+    x <- c(x, list(...))
+    whisker.render(examiner_opts[["tpl_problem"]], data = x)
 }
 
 #' Create a problemset object
@@ -142,29 +176,15 @@ problemset <- function(problems, pretext = "", posttext = "") {
     .Data
 }
 
-format_problems <- function(problems, ...) {
-    str_c(laply(problems, format, ...), collapse = "\n")
-}
-
-format_problemset <- function(x, show_solutions = FALSE) {
-    str_c(beginenv("problemset"),
-          beginenv("problemsetpretext"),
-          str_c(as.character(x[["pretext"]]), collapse = "\n"),
-          endenv("problemsetpretext"),
-          beginenv("problems"),
-          x[["problems"]],
-          endenv("problems"),
-          beginenv("problemsetposttext"),
-          str_c(as.character(x[["posttext"]]), collapse = "\n"),
-          endenv("problemsetposttext"),
-          endenv("problemset"),
-          "\n", sep = "\n")
-}
-
 #' @export
 format.problemset <- function(x, randomize = FALSE, show_solutions = FALSE, ...) {
-    x[["problems"]] <- format_problems(x[["problems"]], show_solutions = show_solutions, randomize = randomize)
-    format_problemset(x, show_solutions = show_solutions)
+    x <- as.list(x)
+    problems <- laply(x[["problems"]], format,
+                      show_solutions = show_solutions,
+                      randomize = randomize, ...)
+    x[["problems"]] <- format(problems, show_solutions = show_solutions, ...)
+    x <- c(x, list(...))
+    whisker.render(examiner_opts[["tpl_problemset"]], data = x)
 }
 
 #' Create problemset from a yaml file
