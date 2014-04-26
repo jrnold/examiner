@@ -14,6 +14,10 @@ ltxnewenv <- function(x, begin = "", end = "") {
     str_c("\\newenvironment{", x, "}{", begin, "}{", end, "}")
 }
 
+shuffle <- function(x) {
+    x[sample(seq_along(x), length(x), replace = FALSE)]
+}
+
 #' Examiner Options
 #'
 #' This environment stores the options used in the \pkg{examiner} package.
@@ -36,7 +40,7 @@ examiner_opts$tpl_problem <-
 
 examiner_opts$tpl_answers <-
     str_c("{{#answers}}",
-          "\\item {{#show_solutions}}{{#correct}}**{{/correct}}{{/show_solutions}} {{{text}}}",
+          "\\item {{#show_solutions}}{{#correct}}*{{/correct}}{{/show_solutions}} {{{text}}}",
           "{{/answers}}",
           sep = "\n")
 
@@ -64,6 +68,7 @@ examiner_opts$latex_header <-
       ltxnewenv("problemtext", "\\par", ""),
       ltxnewenv("problemset", "\\par", ""),
       ltxnewenv("problems", "\\par", ""),
+      ltxnewenv("solution", "\\par", ""),
       ltxnewenv("problemsetpretext", "\\par", ""),
       ltxnewenv("problemsetposttext", "\\par", ""),
       "\\newlist{answers}{enumerate}{1}",
@@ -148,9 +153,9 @@ shuffle_answers <- function(x) {
 }
 
 #' @export
-format.problem <- function(x, randomize = FALSE, show_solutions = FALSE, ...) {
+format.problem <- function(x, shuffle = FALSE, show_solutions = FALSE, ...) {
     x <- as.list(x)
-    if (x[["randomizable"]] && as.logical(randomize)) {
+    if (x[["randomizable"]] && as.logical(shuffle)) {
         x[["answers"]] <- shuffle_answers(x[["answers"]])
     }
     x[["answers"]] <- format(x[["answers"]], show_solutions = show_solutions, ...)
@@ -178,12 +183,16 @@ problemset <- function(problems, pretext = "", posttext = "") {
 }
 
 #' @export
-format.problemset <- function(x, randomize = FALSE, show_solutions = FALSE, ...) {
+format.problemset <- function(x, shuffle_problems = FALSE, shuffle_answers = FALSE, show_solutions = FALSE, ...) {
     x <- as.list(x)
     problems <- laply(x[["problems"]], format,
                       show_solutions = show_solutions,
-                      randomize = randomize, ...)
-    x[["problems"]] <- format(problems, show_solutions = show_solutions, ...)
+                      shuffle = shuffle_answers, ...)
+    problems <- format(problems, show_solutions = show_solutions, ...)
+    if (shuffle_problems) {
+        problems <- shuffle(problems)
+    }
+    x[["problems"]] <- problems
     x <- c(x, list(...))
     whisker.render(examiner_opts[["tpl_problemset"]], data = x)
 }

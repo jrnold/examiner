@@ -10,6 +10,7 @@
 <<echo = FALSE,results = 'hide'>>=
 options(width = 40)
 knitr::opts_chunk[["set"]](tidy = FALSE)
+set.seed(13224)
 @ 
 <<results = 'asis', echo = FALSE>>=
 cat(examiner::examiner_latex_header())
@@ -67,9 +68,29 @@ cat(examiner_latex_header())
 @ 
 I included a call to \verb|examiner_latex_header| is placed in a knitr chunk in the document preamble (see source).
 
-To shuffle the questions, set the \texttt{format} option \texttt{randomize = TRUE},
+To shuffle the order of answers, set the \texttt{format} option \texttt{shuffle\_answers = TRUE},
 <<echo = TRUE, results = 'asis'>>=
-cat(format(problems, randomize = TRUE))
+cat(format(problems, shuffle_problems = TRUE))
 @ 
+
+To shuffle the order of problems, set the \texttt{format} option \texttt{shuffle\_problems = TRUE},
+<<echo = TRUE, results = 'asis'>>=
+cat(format(problems, shuffle_answers = TRUE))
+@ 
+
+To show solutions to the problems, set \texttt{show\_solutions = TRUE}
+<<echo = TRUE, results = 'asis'>>=
+cat(format(problems, show_solutions = TRUE))
+@ 
+
+\section{Customization}
+
+The format of the rendering of the problems into text is controlled by several \textbf{whisker} templates, 
+which uses the mustache templating system. 
+See that package for details of the the format.
+
+These templates are stored in the environment \texttt{examiner\_opt}. 
+Changing these templates controls how the questions are formatted. 
+
 
 \end{document}
