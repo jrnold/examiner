@@ -81,6 +81,7 @@ examiner_latex_header <- function() {
 
 
 #' Create an answerlist object
+#' 
 #' @param x A data frame with colums: text, correct, and fixed.
 #' @return An object of class \code{answerlist}.
 #' @export
@@ -91,10 +92,10 @@ answerlist <- function(x) {
 }
 
 #' @export
-format.answerlist <- function(answers, show_solutions = FALSE, ...) {
-    answers2 <- unname(rowSplit(answers))
+format.answerlist <- function(x, show_solutions = FALSE, ...) {
+    answers <- unname(rowSplit(x))
     whisker.render(examiner_opts[["tpl_answers"]],
-                   data = c(list(answers = answers2,
+                   data = c(list(answers = answers,
                        show_solutions = show_solutions),
                        list(...)))
 }
