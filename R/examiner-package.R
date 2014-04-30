@@ -6,6 +6,7 @@
 #' @import stringr
 #' @import whisker
 #' @import plyr
+#' @import methods
 NULL
 
 beginenv <- function(x) str_c("\\begin{", x, "}")
@@ -18,6 +19,21 @@ shuffle <- function(x) {
     x[sample(seq_along(x), length(x), replace = FALSE)]
 }
 
+Counter <-
+    setRefClass("Counter",
+                fields = list(i = "integer"),
+                methods = list(
+                    add = function(x = 1L) {
+                        i <<- i + as.integer(x)
+                    },
+                    subtract = function(x = 1L) {
+                        i <<- i - as.integer(x)
+                    },
+                    initialize = function(i = 0L) {
+                        i <<- as.integer(i)
+                    }
+                    ))
+
 #' Examiner Options
 #'
 #' This environment stores the options used in the \pkg{examiner} package.
@@ -28,9 +44,7 @@ examiner_opts$tpl_problem <-
           "\\begin{problemtext}",
           "{{{text}}}",
           "\\end{problemtext}",
-          "\\begin{answers}",
           "{{{answers}}}",
-          "\\end{answers}",
           "{{#show_solutions}}",
           "\\begin{solution}",
           "{{{solution}}}",
@@ -39,9 +53,11 @@ examiner_opts$tpl_problem <-
           "\\end{problem}", sep = "\n")
 
 examiner_opts$tpl_answers <-
-    str_c("{{#answers}}",
+    str_c("\\begin{answers}",
+          "{{#answers}}",
           "\\item {{#show_solutions}}{{#correct}}*{{/correct}}{{/show_solutions}} {{{text}}}",
           "{{/answers}}",
+          "\\end{answers}",
           sep = "\n")
 
 
@@ -62,15 +78,40 @@ examiner_opts$tpl_problemset <-
         "\\end{problemset}",
         sep = "\n")
 
+examiner_opts$tpl_problemblock <-
+    str_c(
+        "\\begin{problemblock}",
+        "\\begin{problemblockpretext}",
+        "{{{problemblockpretext}}}",
+        "\\end{problemblockpretext}",
+        "\\begin{problems}",
+        "{{#problems}}",
+        "{{{.}}}",
+        "{{/problems}}",
+        "\\end{problems}",
+        "\\begin{problemblockpretext}",
+        "{{{problemblockpretext}}}",
+        "\\end{problemblockpretext}",
+        "\\end{problemblock}",
+        sep = "\n")
+
+examiner_opts$format_N0 <- identity
+examiner_opts$format_N1 <- identity
+examiner_opts$format_N2 <- identity    
+examiner_opts$format_ia <- identity
+
 examiner_opts$latex_header <-
     c("\\usepackage{amsthm,amsmath,enumitem}",
       "\\theoremstyle{definition}\\newtheorem{problem}{Problem}",
-      ltxnewenv("problemtext", "\\par", ""),
       ltxnewenv("problemset", "\\par", ""),
-      ltxnewenv("problems", "\\par", ""),
-      ltxnewenv("solution", "\\par", ""),
       ltxnewenv("problemsetpretext", "\\par", ""),
       ltxnewenv("problemsetposttext", "\\par", ""),
+      ltxnewenv("problems", "\\par", ""),
+      ltxnewenv("problemtext", "\\par", ""),
+      ltxnewenv("solution", "\\par", ""),
+      ltxnewenv("problemblock", "\\par", ""),
+      ltxnewenv("problemblockpretext", "\\par", ""),
+      ltxnewenv("problemblockposttext", "\\par", ""),
       "\\newlist{answers}{enumerate}{1}",
       "\\setlist[answers]{label=(\\alph*)}")
 
@@ -98,11 +139,22 @@ answerlist <- function(x) {
 
 #' @export
 format.answerlist <- function(x, show_solutions = FALSE, ...) {
+    x$i <- seq_len(nrow(x))
+    x$ia <- examiner_opts$format_ia(x$i)
     answers <- unname(rowSplit(x))
     whisker.render(examiner_opts[["tpl_answers"]],
                    data = c(list(answers = answers,
                        show_solutions = show_solutions),
                        list(...)))
+}
+
+shuffle_answers <- function(x) {
+    indices <- seq_len(nrow(x))[!x[["fixed"]]]
+    iorder <- sample(indices, length(indices))
+    x[indices, ] <- x[iorder, , drop = FALSE]
+    x[ , "i"] <- seq_len(nrow(x))
+    attr(x, "order") <- iorder
+    x
 }
 
 #' Create a problem object
@@ -112,9 +164,10 @@ format.answerlist <- function(x, show_solutions = FALSE, ...) {
 #' @param correct Indices of answers which are correct.
 #' @param first Number of observations at the beginning of \code{answers} which will not be shuffled.
 #' @param last Number of observations at the end of \code{answers} which will not be shuffled.
+#' @param solution Text for the solution to the problem.
 #' @param randomizable Can the answers be shuffled?
 #' @return An object of class \code{problem}.
-#' @keywords internal 
+#' @export
 problem <- function(text = "",
                     answers = character(),
                     solution = "",
@@ -128,9 +181,10 @@ problem <- function(text = "",
     lasti <- pmin(rev(length(answers) - seq_len(last) + 1),
                   length(answers))
     answers <-
-        answerlist(data.frame(text = answers,
+        answerlist(data.frame(text = sapply(answers, as.character), # used to convert heterog type list to character vector
                               correct = seq_along(answers) == correct,
                               fixed = seq_along(answers) %in% c(firsti, lasti),
+                              i = seq_along(answers),
                               stringsAsFactors = FALSE))
     .Data <-
         list(text = text,
@@ -144,37 +198,94 @@ problem <- function(text = "",
     .Data
 }
 
-shuffle_answers <- function(x) {
-    indices <- seq_len(nrow(x))[!x[["fixed"]]]
-    iorder <- sample(indices, length(indices))
-    x[indices, ] <- x[iorder, , drop = FALSE]
-    attr(x, "order") <- iorder
-    x
-}
-
 #' @export
-format.problem <- function(x, shuffle = FALSE, show_solutions = FALSE, ...) {
+format.problem <- function(x, shuffle = FALSE, show_solutions = FALSE,
+                           counter = Counter(), N2 = NULL, N1 = 1L,
+                           ...) {
     x <- as.list(x)
     if (x[["randomizable"]] && as.logical(shuffle)) {
         x[["answers"]] <- shuffle_answers(x[["answers"]])
     }
-    x[["answers"]] <- format(x[["answers"]], show_solutions = show_solutions, ...)
+    counter$add()
+    N0 <- counter$i
+    N1a <- examiner_opts$format_N1(N1)
+    N2a <- examiner_opts$format_N1(N2)
+    N0a <- examiner_opts$format_N1(N0)
+    x[["answers"]] <-
+        format(x[["answers"]], show_solutions = show_solutions,
+               N2 = N2, N1 = N1, N0 = N0, N1a = N1a, N2a = N2a, N0a = N0a, ...)
     x[["show_solutions"]] <- show_solutions
+    x[["N1"]] <- N1
+    x[["N2"]] <- N2
+    x[["N0"]] <- N0
+    x[["N1a"]] <- N1a
+    x[["N2a"]] <- N2a
+    x[["N0a"]] <- N0a
     x <- c(x, list(...))
     whisker.render(examiner_opts[["tpl_problem"]], data = x)
 }
 
-#' Create a problemset object
+#' Create a problemblock object
 #'
 #' @param problems list of problems
-#' @param pretext \code{character} vector with text to go before the questions.
-#' @param posttext \code{character} vector with text to go after the questions.
-#' @return A \code{problemset} object
+#' @param pretext \code{character} vector with text to go before the problems.
+#' @param posttext \code{character} vector with text to go after the problems.
+#' @param randomizable \code{logical} Whether the problems within the block can be shuffled.
+#' @return A \code{problemblock} object.
 #' @export
-problemset <- function(problems, pretext = "", posttext = "") {
+problemblock <- function(problems, pretext = "", posttext = "", randomizable = FALSE) {
     if (! inherits(problems, "list") ||
         !all(sapply(problems, inherits, what = "problem"))) {
         stop("problems must be a list of problem objects")
+    }
+    .Data <- list(problems = problems, pretext = pretext,
+                  posttext = posttext, randomizable = FALSE)
+    class(.Data) <- c("problemblock", "list")
+    .Data
+}
+
+#' @export
+format.problemblock <- function(x, shuffle_problems = FALSE, shuffle_answers = FALSE,
+                                show_solutions = FALSE,
+                                N1 = 1L, counter = Counter(), ...) {
+    x <- as.list(x)
+    problems <- x[["problems"]]
+    if (x[["randomizable"]] && shuffle_problems) {
+        if (shuffle_problems) {
+            problems <- shuffle(problems)
+        }
+    }
+    for (i in seq_along(problems)) {
+        problems[[i]] <-
+            format(problems[[i]],
+                   show_solutions = show_solutions,
+                   shuffle = shuffle_answers,
+                   N1 = N1, N2 = i,
+                   counter = counter,
+                   ...)
+    }
+    x[["problems"]] <- problems
+    x[["N1"]] <- N1
+    x[["N1a"]] <- examiner_opts$format_N1(N1)
+    x <- c(x, list(...))
+    whisker.render(examiner_opts[["tpl_problemblock"]], data = x)
+}
+
+
+#' Create a problemset object
+#'
+#' @param problems list of problems
+#' @param pretext \code{character} vector with text to go before the problems.
+#' @param posttext \code{character} vector with text to go after the problems.
+#' @return A \code{problemset} object.
+#' @export
+problemset <- function(problems, pretext = "", posttext = "") {
+    if (! inherits(problems, "list") ||
+        !all(sapply(problems,
+                    function(x) {
+                        inherits(x, "problem") || inherits(x, "problemblock")
+                    }))) {
+        stop("problems must be a list of problem or problemblock objects")
     }
     .Data <- list(problems = problems, pretext = pretext,
                   posttext = posttext)
@@ -185,26 +296,49 @@ problemset <- function(problems, pretext = "", posttext = "") {
 #' @export
 format.problemset <- function(x, shuffle_problems = FALSE, shuffle_answers = FALSE, show_solutions = FALSE, ...) {
     x <- as.list(x)
-    problems <- laply(x[["problems"]], format,
-                      show_solutions = show_solutions,
-                      shuffle = shuffle_answers, ...)
-    problems <- format(problems, show_solutions = show_solutions, ...)
+    problems <- x[["problems"]]
+    counter <- Counter()
     if (shuffle_problems) {
         problems <- shuffle(problems)
+    }
+    for (i in seq_along(problems)) {
+        problems[[i]] <- format(problems[[i]],
+                              show_solutions = show_solutions,
+                              shuffle = shuffle_answers,
+                              N1 = i,
+                              counter = counter)
     }
     x[["problems"]] <- problems
     x <- c(x, list(...))
     whisker.render(examiner_opts[["tpl_problemset"]], data = x)
 }
 
-#' Create problemset from a yaml file
+list2problem <- function(x) {
+    if ("problems" %in% names(x)) {
+        x[["problems"]] <- llply(x[["problems"]], function(x) do.call(problem, x))
+        do.call(problemblock, x)
+    } else {
+        do.call(problem, x)
+    }
+}
+
+#' Create problemset from yaml file
 #'
 #' @param input Name of the input file.
 #' @return A \code{problemset} object.
 #' @export
 problemset_from_yaml <- function(input) {
-    .Data <- yaml.load_file(input)
-    problems <- llply(.Data[["problems"]], function(x) do.call(problem, x))
-    .Data[["problems"]] <- problems
-    do.call(problemset, .Data)
+    problemset_from_list(yaml.load_file(input))
+}
+
+#' Create problemset from yaml file
+#'
+#' @param x A \code{list}
+#' @return A \code{problemset} object.
+#' @export
+problemset_from_list <- function(x) {
+    x <- as.list(x)
+    problems <- llply(x[["problems"]], list2problem)
+    x[["problems"]] <- problems
+    do.call(problemset, x)
 }

@@ -1,11 +1,11 @@
-\name{problemset_from_yaml}
-\alias{problemset_from_yaml}
+\name{problemset_from_list}
+\alias{problemset_from_list}
 \title{Create problemset from yaml file}
 \usage{
-problemset_from_yaml(input)
+problemset_from_list(x)
 }
 \arguments{
-  \item{input}{Name of the input file.}
+  \item{x}{A \code{list}}
 }
 \value{
 A \code{problemset} object.

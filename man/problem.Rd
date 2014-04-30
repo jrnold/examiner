@@ -20,6 +20,8 @@ problem(text = "", answers = character(), solution = "", correct = 1L,
   \item{last}{Number of observations at the end of
   \code{answers} which will not be shuffled.}
 
+  \item{solution}{Text for the solution to the problem.}
+
   \item{randomizable}{Can the answers be shuffled?}
 }
 \value{
@@ -28,5 +30,4 @@ An object of class \code{problem}.
 \description{
 Create a problem object
 }
-\keyword{internal}
 

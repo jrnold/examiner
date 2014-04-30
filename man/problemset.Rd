@@ -8,13 +8,13 @@ problemset(problems, pretext = "", posttext = "")
   \item{problems}{list of problems}
 
   \item{pretext}{\code{character} vector with text to go
-  before the questions.}
+  before the problems.}
 
   \item{posttext}{\code{character} vector with text to go
-  after the questions.}
+  after the problems.}
 }
 \value{
-A \code{problemset} object
+A \code{problemset} object.
 }
 \description{
 Create a problemset object
