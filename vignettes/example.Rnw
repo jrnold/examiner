@@ -5,6 +5,8 @@
 \title{Examiner Package}
 \author{Jeffrey B. Arnold}
 
+\newcommand{\RLang}{\textsf{R}}
+
 \usepackage{hyperref}
 
 <<echo = FALSE,results = 'hide'>>=
@@ -15,33 +17,14 @@ set.seed(13224)
 <<results = 'asis', echo = FALSE>>=
 cat(examiner::examiner_latex_header())
 @ 
-%% \usepackage{amsmath,amsthm}
-%% \theoremstyle{definition}
-%% \newtheorem{problem}{Problem}
-%% \newenvironment{problemtext}{\par}{}
-%% \newenvironment{problems}{\par}{}
-%% \newenvironment{problemset}{\par}{}
-%% \newenvironment{problemsettext}{\par}{}
-%% \usepackage{enumitem}
-%% \newlist{answers}{enumerate}{1}
-%% \setlist[answers]{label=(\arabic*)}
 
 \begin{document}
 \maketitle{}
 
+\textbf{examiner} is a small package that can be used to create multi-choice exams.
+It allows for the flexible formatting of the questions, and the ability to shuffle both questions and answers within questions.
 
-Problems are stored in a \href{http://www.yaml.org/}{yaml} file.
-Yaml is a compromise between a human and computer readable format. 
-An example questions file is included with the package (\texttt{example/questions.yaml}) and looks like this,
-<<results = 'markup', highlight = FALSE, comment = "", echo = FALSE>>=
-library("examiner")
-library("stringr")
-cat(str_c(readLines(system.file("example/questions.yaml", 
-                                package = "examiner")),
-          collapse = "\n"))
-                                               
-@ 
-
+Questions are stored in a yaml file, more details of which are discussed in Section \ref{sec:problems}.
 The yaml file converted into a \verb|problemset| object with the function \verb|problemset_from_yaml|.
 <<echo = TRUE, results = 'asis'>>=
 library("examiner")
@@ -50,47 +33,127 @@ problems <-
                                      package = "examiner"))
 
 @ 
+This loads the questions into a \texttt{problemset} object.
+Using the \texttt{format} method on that object renders the questions in \LaTeX{} code.
+<<results = 'asis', echo = FALSE>>=
+format(problems)
 
-The problem \texttt{problemset} object which can be rendered into \LaTeX{} using \texttt{format},
-<<echo = TRUE, results = 'asis'>>=
-cat(format(problems))
 @ 
-The raw \LaTeX{} looks like this,
+
+The order of the answers within each problem can be randomized by setting the option \texttt{shuffle\_answers = TRUE},
+<<echo = TRUE, results = 'asis'>>=
+cat(format(problems, shuffle_problems = TRUE))
+@ 
+
+The order of problems can be randomized by setting the option \texttt{shuffle\_problems = TRUE},
+<<echo = TRUE, results = 'asis'>>=
+cat(format(problems, shuffle_answers = TRUE))
+@ 
+
+The solutions to the problems are shown if \texttt{show\_solutions = TRUE}
+<<echo = TRUE, results = 'asis'>>=
+cat(format(problems, show_solutions = TRUE))
+@ 
+
+\section{Problems}
+\label{sec:problems}
+
+Problems are read from from a \href{http://www.yaml.org/}{yaml} file.
+Yaml is a nice compromise between a human and computer readable format.
+An example questions file is included with the package (\texttt{example/questions.yaml}) and looks like this,
+<<results = 'markup', highlight = FALSE, comment = "", echo = FALSE>>=
+library("stringr")
+cat(str_c(readLines(system.file("example/questions.yaml", 
+                                package = "examiner")),
+          collapse = "\n"))
+                                               
+@ 
+
+For a more complex example that includes both \texttt{problems} and \texttt{problemblock} objects see \texttt{example/questions2.yaml} (output not shown here).
+<<eval=FALSE>>=
+cat(str_c(readLines(system.file("example/questions.yaml", 
+                                package = "examiner")),
+          collapse = "\n"))
+@ 
+
+A single yaml document is assumed to map to a single \texttt{problemset} object.
+The format of the various blocks transparently map to the arguments in \texttt{problemset}, \texttt{problem}, and \texttt{problemblock}.
+Optional arguments do not need to be included, and will be set to the defaults in those functions.
+Most notably, if \texttt{correct} is missing, the first element in the \texttt{answers} list is assumed to be correct.
+
+Note that \texttt{problemset\_from\_yaml} simply uses \texttt{yaml.load\_file} to load the file, and \texttt{problemset\_from\_list} to convert it into a list.
+Other file formats could be supported as long as a function is written to load the data and return a \texttt{problemset} object.
+
+\section{Formatting}
+\label{sec:formatting}
+
+The rendering of R objects into text is controlled by several \textbf{whisker} templates.
+The \textbf{whisker} package is an R implementation of the \href{http://mustache.github.io/}{mustache} templating system.
+See that package and the mustache website for details of the format.
+
+These templates are stored in the environment \texttt{examiner\_opt}.
+\begin{itemize}
+\item \texttt{tpl\_problemset} Formats \texttt{problemset} objects
+\item \texttt{tpl\_problemblock} Formats \texttt{problemblock} objects
+\item \texttt{tpl\_problem} Formats \texttt{problem} objects
+\item \texttt{tpl\_answers} Formats \texttt{answer} objects (contained in \texttt{answers}).
+\end{itemize}
+
+Changing these templates controls how the questions are formatted. 
+The default values of these templates are:
+<<>>=
+cat(tpl_problembset)
+cat(tpl_problemblock)
+cat(tpl_problemb)
+cat(tpl_answers)
+@ 
+When  combined with the data from \texttt{questions.yaml}, this generates the \LaTeX output,
 <<echo = FALSE, results = 'markup', highlight = FALSE, comment = "">>=
 cat(format(problems))
 @ 
 
 Note that the rendering encloses the output in the environments \texttt{problemset}, \texttt{problemsetpretext}, \texttt{problemsetposttext}, \texttt{problems}, \texttt{problem}, \texttt{problemtext}, and \texttt{answers}.
-These environments can be redefined to change their style in the document without changing the definitions of functions in \textbf{examiner}, because this isn't Microsoft Word and that's how Donald Knuth would want me to do it.
-This document used the defaults included in this package.
+These environments can be redefined to change their style in the document without changing the definitions of functions in \textbf{examiner}.
+Some default definitions for these environments are included in the package, and can be accessed through the function \texttt{examiner\_latex\_header}:
 <<>>=
 cat(examiner_latex_header())
 @ 
-I included a call to \verb|examiner_latex_header| is placed in a knitr chunk in the document preamble (see source).
+A call to \verb|examiner_latex_header| was placed in a knitr chunk in this document in order to render the questions in the earlier section.
 
-To shuffle the order of answers, set the \texttt{format} option \texttt{shuffle\_answers = TRUE},
-<<echo = TRUE, results = 'asis'>>=
-cat(format(problems, shuffle_problems = TRUE))
+These templates can be redefined to customize how the problems are rendered.
+For example, this changes the templates to render the problems in Markdown:
+<<>>=
+examiner_opts$tpl_problem <-
+    str_c("{{{text}}}", "\n",
+          "{{{answers}}}", 
+          sep = "\n")
+
+examiner_opts$tpl_answers <-
+    str_c("{{#answers}}",
+          "    1. {{{text}}}",
+          "{{/answers}}",
+          sep = "\n")
+
+examiner_opts$tpl_problemset <-
+    str_c(
+        "{{{pretext}}}\n",
+        "{{#problems}}",
+        "1. {{{.}}}",
+        "{{/problems}}",
+        "\n{{{posttext}}}",
+        sep = "\n")
+
+examiner_opts$tpl_problemblock <-
+    str_c(
+        "{{{pretext}}}\n",
+        "{{#problems}}",
+        "1. {{{.}}}",
+        "{{/problems}}",
+        "{{{posttext}}}\n",
+        sep = "\n")
+
+cat(format(problems), "\n")
+
 @ 
-
-To shuffle the order of problems, set the \texttt{format} option \texttt{shuffle\_problems = TRUE},
-<<echo = TRUE, results = 'asis'>>=
-cat(format(problems, shuffle_answers = TRUE))
-@ 
-
-To show solutions to the problems, set \texttt{show\_solutions = TRUE}
-<<echo = TRUE, results = 'asis'>>=
-cat(format(problems, show_solutions = TRUE))
-@ 
-
-\section{Customization}
-
-The format of the rendering of the problems into text is controlled by several \textbf{whisker} templates, 
-which uses the mustache templating system. 
-See that package for details of the the format.
-
-These templates are stored in the environment \texttt{examiner\_opt}. 
-Changing these templates controls how the questions are formatted. 
-
 
 \end{document}

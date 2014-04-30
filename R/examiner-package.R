@@ -72,9 +72,9 @@ examiner_opts$tpl_problemset <-
         "{{{.}}}",
         "{{/problems}}",
         "\\end{problems}",
-        "\\begin{problemsetpretext}",
-        "{{{problemsetpretext}}}",
-        "\\end{problemsetpretext}",
+        "\\begin{problemsetposttext}",
+        "{{{problemsetposttext}}}",
+        "\\end{problemsetposttext}",
         "\\end{problemset}",
         sep = "\n")
 
