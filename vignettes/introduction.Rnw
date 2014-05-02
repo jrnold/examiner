@@ -1,11 +1,13 @@
 %\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{knitr}
+%\VignetteIndexEntry{Introduction to the examiner package}
 \documentclass{article}
 
 \title{Examiner Package}
 \author{Jeffrey B. Arnold}
 
 \newcommand{\RLang}{\textsf{R}}
+\usepackage{enumitem}
+\setlist[description]{font=\ttfamily,noitemsep}
 
 \usepackage{hyperref}
 
@@ -36,7 +38,7 @@ problems <-
 This loads the questions into a \texttt{problemset} object.
 Using the \texttt{format} method on that object renders the questions in \LaTeX{} code.
 <<results = 'asis', echo = FALSE>>=
-format(problems)
+cat(format(problems))
 
 @ 
 
@@ -69,7 +71,7 @@ cat(str_c(readLines(system.file("example/questions.yaml",
                                                
 @ 
 
-For a more complex example that includes both \texttt{problems} and \texttt{problemblock} objects see \texttt{example/questions2.yaml} (output not shown here).
+For a more complex example that includes both \texttt{problems} and \texttt{problemlock} objects see \texttt{example/questions2.yaml} (output not shown here).
 <<eval=FALSE>>=
 cat(str_c(readLines(system.file("example/questions.yaml", 
                                 package = "examiner")),
@@ -102,10 +104,9 @@ These templates are stored in the environment \texttt{examiner\_opt}.
 Changing these templates controls how the questions are formatted. 
 The default values of these templates are:
 <<>>=
-cat(tpl_problembset)
-cat(tpl_problemblock)
-cat(tpl_problemb)
-cat(tpl_answers)
+cat(examiner_opts$tpl_problemset)
+cat(examiner_opts$tpl_problemblock)
+cat(examiner_opts$tpl_problemb)
 @ 
 When  combined with the data from \texttt{questions.yaml}, this generates the \LaTeX output,
 <<echo = FALSE, results = 'markup', highlight = FALSE, comment = "">>=
@@ -119,6 +120,82 @@ Some default definitions for these environments are included in the package, and
 cat(examiner_latex_header())
 @ 
 A call to \verb|examiner_latex_header| was placed in a knitr chunk in this document in order to render the questions in the earlier section.
+
+\newcommand{\examinerNOne}{\item[N1] Problem number (top level \texttt{problem} or \texttt{problemblock} objects).}
+\newcommand{\examinerNOneA}{\item[N1a] Output of \texttt{examiner\_opts\$format\_N1(N1)}}.
+\newcommand{\examinerNTwo}{\item[N2] \texttt{NULL} if not in a \texttt{problemblock} object. If in a \texttt{problemblock} object, the problem number with that block.}
+\newcommand{\examinerNTwoA}{\item[N2a] Output of \texttt{examiner\_opts\$format\_N2(N2)}.}
+\newcommand{\examinerNZero}{\item[N0] Problem number, all problems, including those within \texttt{problemblock} objects.}
+\newcommand{\examinerNZeroA}{\item[N0a] Output of \texttt{examiner\_opts\$format\_N0(N0)}}
+\newcommand{\examinerShowSolutions}{\item[show\_solutions] \texttt{logical}. Whether to show solutions.}
+
+\subsection{answerlist}
+
+<<>>=
+cat(examiner_opts$tpl_answers)
+@ 
+
+The context in which \texttt{tpl\_answerlist} is evaluated is:
+
+\begin{description}
+\item[answers] list of lists generated from calling \texttt{rowSplit} on the \texttt{answerlist} object.
+\examinerNZero{}
+\examinerNZeroA{}
+\examinerNOne{}
+\examinerNOneA{}
+\examinerNTwo{}
+\examinerNTwoA{}
+\examinerShowSolutions{}
+\end{description}
+
+\subsection{problem}
+
+<<>>=
+cat(examiner_opts$tpl_problem)
+@ 
+
+The context in which \texttt{tpl\_problem} is evaluated is the \texttt{problem} object converted into a list with the following additions / changes:
+
+\begin{description}
+\item[answers] \texttt{character}. Output of calling \texttt{format} on the \texttt{answers} element.
+\examinerNZero{}
+\examinerNZeroA{}
+\examinerNOne{}
+\examinerNOneA{}
+\examinerNTwo{}
+\examinerNTwoA{}
+\examinerShowSolutions{}
+\end{description}
+
+\subsection{problemblock}
+
+<<>>=
+cat(examiner_opts$tpl_problemblock)
+@ 
+
+The context in which \texttt{tpl\_problemblock} is evaluated is the \texttt{problemblock} object converted into a list with the following additions / changes:
+
+\begin{description}
+\item[answers] \texttt{character}. Output of calling \texttt{format} on the \texttt{problems} element.
+\examinerNZero{}
+\examinerNZeroA{}
+\item Other elements in the \texttt{problemblock} object.
+\end{description}
+
+\subsection{problemset}
+
+<<>>=
+cat(examiner_opts$tpl_problembset)
+@ 
+
+The context in which \texttt{tpl\_problemblock} is evaluated is the \texttt{problemblock} object converted into a list with the following additions / changes:
+
+\begin{description}
+\item[problems] A \texttt{character} vector created by calling \texttt{format} on each element in \texttt{problems}.
+\item Other elements in the \texttt{problemblock} object.
+\end{description}
+
+\subsection{}
 
 These templates can be redefined to customize how the problems are rendered.
 For example, this changes the templates to render the problems in Markdown:
@@ -145,11 +222,11 @@ examiner_opts$tpl_problemset <-
 
 examiner_opts$tpl_problemblock <-
     str_c(
-        "{{{pretext}}}\n",
-        "{{#problems}}",
-        "1. {{{.}}}",
-        "{{/problems}}",
-        "{{{posttext}}}\n",
+        "    {{{pretext}}}\n",
+        "    {{#problems}}",
+        "        1. {{{.}}}",
+        "    {{/problems}}",
+        "    {{{posttext}}}\n",
         sep = "\n")
 
 cat(format(problems), "\n")

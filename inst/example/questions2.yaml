@@ -28,7 +28,7 @@ problems:
       - red
       - yellow
       - purple
-  - text: Answer these questions Sir Robin of Camelot.
+  - pretext: Answer these questions Sir Robin of Camelot.
     problems:
       - text: What is your name?
         correct: 4
@@ -57,7 +57,7 @@ problems:
           - "I don't know that!"
         solution: |
           There were four capitals of Assyria: Ashur, Calah, Dur Shrrukin, and Ninevah \url{http://style.org/unladenswallow/#8}. Of those, only Ninevah is one of the choices given here. Pleading ignorance is not a correct answer.
-  - text: "Answer these questions, Sir Galahad of Camelot"
+  - pretext: "Answer these questions, Sir Galahad of Camelot"
     problems:
       - text: What is your name?
         correct: 5
@@ -67,13 +67,13 @@ problems:
           - Sir Robin of Camelot
           - Sir Bedevere
           - Sir Galahad of Camelot
-      - text: What is your quest?
+      - text: "What is your quest?"
         correct: 1
         answers:
           - To seek the Holy Grail
           - To kill ferocious bunnies
           - To develop silly walks
-        - To find the meaning of life
+          - To find the meaning of life
       - text: What your favorite color?
         correct: 4
         answers:
@@ -82,7 +82,7 @@ problems:
           - red
           - yellow
           - purple
-  - text: "Answer these questions, Arthur, King of the Britons"
+  - pretext: "Answer these questions, Arthur, King of the Britons"
     problems:
       - text: What is your name?
         correct: 2

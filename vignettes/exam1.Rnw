@@ -1,0 +1,31 @@
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{exam1}
+\documentclass{article}
+
+\title{Final: The Bridge of Death}
+\author{Bridgekeeper}
+
+<<echo = FALSE,results = 'hide'>>=
+options(width = 40)
+knitr::opts_chunk[["set"]](tidy = FALSE)
+set.seed(13224)
+library("examiner")
+
+@ 
+<<results = 'asis', echo = FALSE>>=
+cat(examiner::examiner_latex_header())
+@ 
+
+\begin{document}
+
+\maketitle{}
+
+<<echo = FALSE, results = 'asis'>>=
+problems <- 
+    problemset_from_yaml(system.file("example/questions.yaml", 
+                                     package = "examiner"))
+cat(format(problems))
+
+@ 
+
+\end{document}
