@@ -52,7 +52,7 @@ examiner_opts$tpl_problem <-
           "{{/show_solutions}}",
           "\\end{problem}", sep = "\n")
 
-examiner_opts$tpl_answers <-
+examiner_opts$tpl_answerlist <-
     str_c("\\begin{answers}",
           "{{#answers}}",
           "\\item",
@@ -102,11 +102,6 @@ examiner_opts$tpl_problemblock <-
         "\\end{problemblock}",
         sep = "\n")
 
-examiner_opts$format_N0 <- identity
-examiner_opts$format_N1 <- identity
-examiner_opts$format_N2 <- identity    
-examiner_opts$format_ia <- identity
-
 examiner_opts$latex_header <-
     c("\\usepackage{amsthm,amsmath,enumitem}",
       "\\theoremstyle{definition}\\newtheorem{problem}{Problem}",
@@ -147,14 +142,17 @@ answerlist <- function(x) {
 }
 
 #' @export
-format.answerlist <- function(x, show_solutions = FALSE, .debug = FALSE, ...) {
+format.answerlist <- function(x, show_solutions = FALSE, .debug = FALSE,
+                              tpl_answerlist = examiner_opts$tpl_answerlist,
+                              format_answer_counter = identity,
+                              ...) {
     x$i <- seq_len(nrow(x))
     x$ia <- examiner_opts$format_ia(x$i)
     data <- c(list(answers = unname(rowSplit(x)),
                    show_solutions = show_solutions),
                    list(...))
     if (.debug) print(data)
-    whisker.render(examiner_opts[["tpl_answers"]],
+    whisker.render(tpl_answerlist,
                    data = data)
 }
 
@@ -209,8 +207,15 @@ problem <- function(text = "",
 }
 
 #' @export
-format.problem <- function(x, shuffle_answers = FALSE, show_solutions = FALSE,
-                           counter = Counter(), N2 = NULL, N1 = 1L,
+format.problem <- function(x,
+                           shuffle_answers = FALSE,
+                           show_solutions = FALSE,
+                           counter = Counter(),
+                           N2 = NULL,
+                           N1 = 1L,
+                           format_N1 = identity,
+                           format_N2 = identity,
+                           format_N0 = identity,                           
                            .debug = FALSE, ...) {
     x <- as.list(x)
     if (x[["randomizable"]] && as.logical(shuffle_answers)) {
@@ -233,7 +238,7 @@ format.problem <- function(x, shuffle_answers = FALSE, show_solutions = FALSE,
     data[["N2a"]] <- N2a
     data[["N0a"]] <- N0a
     data <- c(data, list(...))
-    whisker.render(examiner_opts[["tpl_problem"]], data = data)
+    whisker.render(tpl_problem, data = data)
 }
 
 #' Create a problemblock object
@@ -256,10 +261,15 @@ problemblock <- function(problems, pretext = "", posttext = "", randomizable = F
 }
 
 #' @export
-format.problemblock <- function(x, shuffle_problems = FALSE, shuffle_answers = FALSE,
+format.problemblock <- function(x, shuffle_problems = FALSE,
+                                shuffle_answers = FALSE,
                                 show_solutions = FALSE,
-                                N1 = 1L, counter = Counter(),
-                                .debug = FALSE, ...) {
+                                N1 = 1L,
+                                counter = Counter(),
+                                tpl_problemblock = examiner_opts$tpl_problemblock,
+                                format_N1 = identity,
+                                .debug = FALSE,
+                                ...) {
     x <- as.list(x)
     problems <- x[["problems"]]
     if (x[["randomizable"]] && shuffle_problems) {
@@ -279,7 +289,7 @@ format.problemblock <- function(x, shuffle_problems = FALSE, shuffle_answers = F
     }
     x[["problems"]] <- problems
     x[["N1"]] <- N1
-    x[["N1a"]] <- examiner_opts$format_N1(N1)
+    x[["N1a"]] <- format_N1(N1)
     data <- c(x, list(...))
     if (.debug) print(data)
     whisker.render(examiner_opts[["tpl_problemblock"]], data = data)
@@ -309,7 +319,9 @@ problemset <- function(problems, pretext = "", posttext = "") {
 
 #' @export
 format.problemset <- function(x, shuffle_problems = FALSE, shuffle_answers = FALSE,
-                              show_solutions = FALSE, .debug = FALSE, ...) {
+                              show_solutions = FALSE, .debug = FALSE,
+                              tpl_problemset = examiner_opts$tpl_problemset,
+                              ...) {
     x <- as.list(x)
     problems <- x[["problems"]]
     counter <- Counter()
@@ -321,12 +333,13 @@ format.problemset <- function(x, shuffle_problems = FALSE, shuffle_answers = FAL
                                 show_solutions = show_solutions,
                                 shuffle_answers = shuffle_answers,
                                 N1 = i,
-                                counter = counter)
+                                counter = counter,
+                                ...)
     }
     x[["problems"]] <- problems
     data <- c(x, list(...))
     if (.debug) print(data)
-    whisker.render(examiner_opts[["tpl_problemset"]], data = data)
+    whisker.render(tpl_problemset, data = data)
 }
 
 list2problem <- function(x) {
