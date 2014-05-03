@@ -34,6 +34,7 @@ problems <-
     problemset_from_yaml(system.file("example/questions.yaml", 
                                      package = "examiner"))
 
+
 @ 
 This loads the questions into a \texttt{problemset} object.
 Using the \texttt{format} method on that object renders the questions in \LaTeX{} code.

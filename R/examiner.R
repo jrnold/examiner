@@ -1,4 +1,6 @@
-#' examiner.
+#' examiner package
+#'
+#' A package to assist in the creation of multiple choice exams.
 #'
 #' @name examiner
 #' @docType package
@@ -146,8 +148,7 @@ format.answerlist <- function(x, show_solutions = FALSE, .debug = FALSE,
                               tpl_answerlist = examiner_opts$tpl_answerlist,
                               format_answer_counter = identity,
                               ...) {
-    x$i <- seq_len(nrow(x))
-    x$ia <- examiner_opts$format_ia(x$i)
+    x$ia <- format_answer_counter(x$i)
     data <- c(list(answers = unname(rowSplit(x)),
                    show_solutions = show_solutions),
                    list(...))
@@ -210,6 +211,7 @@ problem <- function(text = "",
 format.problem <- function(x,
                            shuffle_answers = FALSE,
                            show_solutions = FALSE,
+                           tpl_problem = examiner_opts$tpl_problem,
                            counter = Counter(),
                            N2 = NULL,
                            N1 = 1L,
@@ -223,9 +225,9 @@ format.problem <- function(x,
     }
     counter$add()
     N0 <- counter$i
-    N1a <- examiner_opts$format_N1(N1)
-    N2a <- examiner_opts$format_N1(N2)
-    N0a <- examiner_opts$format_N1(N0)
+    N1a <- format_N1(N1)
+    N2a <- format_N2(N2)
+    N0a <- format_N0(N0)
     x[["answers"]] <-
         format(x[["answers"]], show_solutions = show_solutions,
                N2 = N2, N1 = N1, N0 = N0, N1a = N1a, N2a = N2a, N0a = N0a, ...)
@@ -270,9 +272,9 @@ format.problemblock <- function(x, shuffle_problems = FALSE,
                                 format_N1 = identity,
                                 .debug = FALSE,
                                 ...) {
-    x <- as.list(x)
-    problems <- x[["problems"]]
-    if (x[["randomizable"]] && shuffle_problems) {
+    data <- as.list(x)
+    problems <- data[["problems"]]
+    if (data[["randomizable"]] && shuffle_problems) {
         if (shuffle_problems) {
             problems <- shuffle(problems)
         }
@@ -287,12 +289,12 @@ format.problemblock <- function(x, shuffle_problems = FALSE,
                    counter = counter,
                    ...)
     }
-    x[["problems"]] <- problems
-    x[["N1"]] <- N1
-    x[["N1a"]] <- format_N1(N1)
-    data <- c(x, list(...))
+    data[["problems"]] <- problems
+    data[["N1"]] <- N1
+    data[["N1a"]] <- format_N1(N1)
+    data <- c(data, list(...))
     if (.debug) print(data)
-    whisker.render(examiner_opts[["tpl_problemblock"]], data = data)
+    whisker.render(tpl_problemblock, data = data)
 }
 
 
@@ -322,8 +324,8 @@ format.problemset <- function(x, shuffle_problems = FALSE, shuffle_answers = FAL
                               show_solutions = FALSE, .debug = FALSE,
                               tpl_problemset = examiner_opts$tpl_problemset,
                               ...) {
-    x <- as.list(x)
-    problems <- x[["problems"]]
+    data <- as.list(x)
+    problems <- data[["problems"]]
     counter <- Counter()
     if (shuffle_problems) {
         problems <- shuffle(problems)
@@ -336,8 +338,8 @@ format.problemset <- function(x, shuffle_problems = FALSE, shuffle_answers = FAL
                                 counter = counter,
                                 ...)
     }
-    x[["problems"]] <- problems
-    data <- c(x, list(...))
+    data[["problems"]] <- problems
+    data <- c(data, list(...))
     if (.debug) print(data)
     whisker.render(tpl_problemset, data = data)
 }
@@ -371,3 +373,23 @@ problemset_from_list <- function(x) {
     x[["problems"]] <- problems
     do.call(problemset, x)
 }
+
+roman <- function(x) tolower(as.roman(x))
+
+Roman <- function(x) as.roman(x)
+
+alph <- function(x) {
+    i <- ((x - 1) %% 26) + 1
+    n <- ((x - 1) %/% 26) + 1
+    unname(mapply(function(ltr, n) paste0(rep(ltr, n), collapse = ""),
+                  letters[i], n))
+}
+
+Alph <- function(x) {
+    i <- ((x - 1) %% 26) + 1
+    n <- ((x - 1) %/% 26) + 1
+    unname(mapply(function(ltr, n) paste0(rep(ltr, n), collapse = ""),
+                  LETTERS[i], n))
+}
+
+
