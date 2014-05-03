@@ -5,7 +5,7 @@
 
 # Final: The Bridge of Death
 
-```{r echo = FALSE,results = 'hide'}
+```{r echo = FALSE, results = 'hide'}
 options(width = 40)
 knitr::opts_chunk[["set"]](tidy = FALSE)
 set.seed(13224)
@@ -19,42 +19,31 @@ examiner_opts$tpl_problem <-
 
 examiner_opts$tpl_answers <-
     str_c("{{#answers}}",
-          "    1. {{{text}}}",
+          "1. {{{text}}}",
           "{{/answers}}",
           sep = "\n")
 
 examiner_opts$tpl_problemset <-
-    str_c(
-        "{{{pretext}}}\n",
-        "{{#problems}}",
-        "1. {{{.}}}",
-        "{{/problems}}",
-        "\n{{{posttext}}}",
-        sep = "\n")
+    str_c("{{{pretext}}}\n",
+          "{{#problems}}",
+          "{{{.}}}",
+          "{{/problems}}",
+          "\n{{{posttext}}}",
+          sep = "\n")
 
 examiner_opts$tpl_problemblock <-
-    str_c(
-        "    {{{pretext}}}\n",
-        "    {{#problems}}",
-        "    1. {{{.}}}",
-        "    {{/problems}}",
-        "    {{{posttext}}}\n",
-        sep = "\n")
-	
+    str_c("{{{pretext}}}\n",
+          "{{#problems}}",
+          "{{{.}}}",
+          "{{/problems}}",
+          "{{{posttext}}}\n",
+          sep = "\n")
 ```
 
 ```{r, echo = FALSE, results = 'asis'}
-
 problems <- 
     problemset_from_yaml(system.file("example/questions2.yaml", 
                                      package = "examiner"))
 cat(format(problems))
-```
-
-```{r}
-for (i in ls(examiner_opts)) {
-    print(i)
-    print(examiner_opts[[i]])
-}
 
 ```
