@@ -22,7 +22,7 @@ cat(examiner::examiner_latex_header())
 
 <<echo = FALSE, results = 'asis'>>=
 problems <- 
-    problemset_from_yaml(system.file("example/questions2.yaml", 
+    problemset_from_yaml(system.file("yaml/questions2.yaml", 
                                      package = "examiner"))
 cat(format(problems))
 

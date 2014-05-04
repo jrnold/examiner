@@ -12,18 +12,18 @@ set.seed(13224)
 library("examiner")
 library("stringr")
 
-examiner_opts$tpl_problem <-
+tpl_problem <-
     str_c("{{{text}}}", "\n",
           "{{{answers}}}", 
           sep = "\n")
 
-examiner_opts$tpl_answers <-
+tpl_answerlist <-
     str_c("{{#answers}}",
           "1. {{{text}}}",
           "{{/answers}}",
           sep = "\n")
 
-examiner_opts$tpl_problemset <-
+tpl_problemset <-
     str_c("{{{pretext}}}\n",
           "{{#problems}}",
           "{{{.}}}",
@@ -31,7 +31,7 @@ examiner_opts$tpl_problemset <-
           "\n{{{posttext}}}",
           sep = "\n")
 
-examiner_opts$tpl_problemblock <-
+tpl_problemblock <-
     str_c("{{{pretext}}}\n",
           "{{#problems}}",
           "{{{.}}}",
@@ -42,8 +42,12 @@ examiner_opts$tpl_problemblock <-
 
 ```{r, echo = FALSE, results = 'asis'}
 problems <- 
-    problemset_from_yaml(system.file("example/questions2.yaml", 
+    problemset_from_yaml(system.file("yaml/questions2.yaml", 
                                      package = "examiner"))
-cat(format(problems))
+cat(format(problems,
+	tpl_answerlist = tpl_answerlist,
+	tpl_problemset = tpl_problemset,
+	tpl_problemblock = tpl_problemblock,
+	tpl_problem = tpl_problem))
 
 ```

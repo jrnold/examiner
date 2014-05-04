@@ -42,7 +42,7 @@ Counter <-
 #' @export
 examiner_opts <- new.env(hash = TRUE)
 examiner_opts$tpl_problem <-
-    str_c("\\begin{problem}",
+    str_c("\\vspace{1em}\\begin{minipage}{\\textwidth}\\begin{problem}",
           "\\begin{problemtext}",
           "{{{text}}}",
           "\\end{problemtext}",
@@ -52,7 +52,7 @@ examiner_opts$tpl_problem <-
           "{{{solution}}}",
           "\\end{solution}",
           "{{/show_solutions}}",
-          "\\end{problem}", sep = "\n")
+          "\\end{problem}\\end{minipage}", sep = "\n")
 
 examiner_opts$tpl_answerlist <-
     str_c("\\begin{answers}",
@@ -119,7 +119,7 @@ examiner_opts$latex_header <-
       ltxnewenv("problemblockpretext", "\\par", ""),
       ltxnewenv("problemblockposttext", "\\par", ""),
       "\\newlist{answers}{enumerate}{1}",
-      "\\setlist[answers]{label=(\\alph*),noitemsep}")
+      "\\setlist[answers]{label=(\\alph*),noitemsep,nosep}")
 
 #' Create a LaTeX header for \code{examiner} output
 #'
