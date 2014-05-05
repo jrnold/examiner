@@ -189,4 +189,8 @@ The data which is passed to template is the  \texttt{problemset} object converte
 \item Other elements in the \texttt{problemblock} object.
 \end{description}
 
+\section{Example}
+
+See the contents of \texttt{inst/example} for a full working example which generates an exam with multiple versions and accompanying solutions.
+
 \end{document}
