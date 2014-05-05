@@ -1,8 +1,8 @@
 %\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{exam2 Solutions}
+%\VignetteIndexEntry{Example Exam 2: Solutions}
 \documentclass{article}
 
-\title{Final: The Bridge of Death, Solutions}
+\title{Example Exam 2: Solutions}
 \author{Bridgekeeper}
 \usepackage{hyperref}
 

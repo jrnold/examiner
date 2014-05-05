@@ -1,5 +1,7 @@
 ---
-pretext: "Who would cross the Bridge of Death must answer me these questions three, 'ere the other side he see."
+pretext: |
+  Who would cross the Bridge of Death must answer me these 
+  questions three, 'ere the other side he see.
 posttext: "Arrrrrrrrrrrrrgh!"
 problems:
   - text: What is your name?
@@ -15,7 +17,7 @@ problems:
     answers:
       - To seek the Holy Grail
       - To kill ferocious bunnies
-      - To develop silly walks
+      - To invent silly walks
       - To find the meaning of life
   - text: What is the airspeed of an unladen swallow?
     correct: 5

@@ -1,13 +1,13 @@
 %\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{exam1}
+%\VignetteIndexEntry{Example Exam 1}
 \documentclass{article}
 
-\title{Final: The Bridge of Death}
-\author{Bridgekeeper}
+\title{Example Exam 1}
 
 <<echo = FALSE,results = 'hide'>>=
 options(width = 40)
 knitr::opts_chunk[["set"]](tidy = FALSE)
+knitr::opts_chunk[["set"]](dev = c("pdf", "png"))
 set.seed(13224)
 library("examiner")
 
@@ -17,6 +17,9 @@ cat(examiner::examiner_latex_header())
 @ 
 
 \begin{document}
+<<>>=
+print(knitr::opts_chunk[["get"]]("dev"))
+@ 
 
 \maketitle{}
 

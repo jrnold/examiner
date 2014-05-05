@@ -1,6 +1,7 @@
 #' examiner package
 #'
 #' A package to assist in the creation of multiple choice exams.
+#' See the vignettes for examples.
 #'
 #' @name examiner
 #' @docType package
@@ -25,16 +26,19 @@ Counter <-
     setRefClass("Counter",
                 fields = list(i = "integer"),
                 methods = list(
-                    add = function(x = 1L) {
-                        i <<- i + as.integer(x)
-                    },
-                    subtract = function(x = 1L) {
-                        i <<- i - as.integer(x)
-                    },
-                    initialize = function(i = 0L) {
-                        i <<- as.integer(i)
-                    }
-                    ))
+                add = function(x = 1L) {
+                    i <<- i + as.integer(x)
+                },
+                subtract = function(x = 1L) {
+                    i <<- i - as.integer(x)
+                },
+                reset = function(x = 0L) {
+                    i <<- x
+                },
+                initialize = function(i = 0L) {
+                    i <<- as.integer(i)
+                }
+                ))
 
 #' Examiner Options
 #'
@@ -42,7 +46,9 @@ Counter <-
 #' @export
 examiner_opts <- new.env(hash = TRUE)
 examiner_opts$tpl_problem <-
-    str_c("\\vspace{1em}\\begin{minipage}{\\textwidth}\\begin{problem}",
+    str_c("\\begin{minipage}{\\textwidth}",
+          "\\noindent",
+          "\\begin{problem}",
           "\\begin{problemtext}",
           "{{{text}}}",
           "\\end{problemtext}",
@@ -52,19 +58,21 @@ examiner_opts$tpl_problem <-
           "{{{solution}}}",
           "\\end{solution}",
           "{{/show_solutions}}",
-          "\\end{problem}\\end{minipage}", sep = "\n")
+          "\\end{problem}",
+          "\\end{minipage}", sep = "\n")
 
 examiner_opts$tpl_answerlist <-
     str_c("\\begin{answers}",
           "{{#answers}}",
-          "\\item",
-          "{{#show_solutions}}",
-          str_c("{{#correct}}\\begin{correctanswer} {{{text}}} \\end{correctanswer} {{/correct}}",
-                "{{^correct}}\\begin{wronganswer} {{{text}}} \\end{wronganswer} {{/correct}}"),
-          "{{/show_solutions}}",
-          "{{^show_solutions}}",
-          "{{{text}}}",
-          "{{/show_solutions}}",
+          str_c("\\item",
+                "{{#show_solutions}}",
+                "{{#correct}}\\begin{correctanswer} {{{text}}} \\end{correctanswer} {{/correct}}",
+                "{{^correct}}\\begin{wronganswer} {{{text}}} \\end{wronganswer} {{/correct}}",
+                "{{/show_solutions}}",
+                "{{^show_solutions}}",
+                "{{{text}}}",
+                "{{/show_solutions}}",
+                sep = " "),
           "{{/answers}}",
           "\\end{answers}",
           sep = "\n")
@@ -74,15 +82,15 @@ examiner_opts$tpl_problemset <-
     str_c(
         "\\begin{problemset}",
         "\\begin{problemsetpretext}",
-        "{{{problemsetpretext}}}",
+        "{{{pretext}}}",
         "\\end{problemsetpretext}",
         "\\begin{problems}",
         "{{#problems}}",
-        "{{{.}}}",
+        "\\noindent {{{.}}}",
         "{{/problems}}",
         "\\end{problems}",
         "\\begin{problemsetposttext}",
-        "{{{problemsetposttext}}}",
+        "{{{posttext}}}",
         "\\end{problemsetposttext}",
         "\\end{problemset}",
         sep = "\n")
@@ -91,7 +99,7 @@ examiner_opts$tpl_problemblock <-
     str_c(
         "\\begin{problemblock}",
         "\\begin{problemblockpretext}",
-        "{{{problemblockpretext}}}",
+        "{{{pretext}}}",
         "\\end{problemblockpretext}",
         "\\begin{problems}",
         "{{#problems}}",
@@ -99,7 +107,7 @@ examiner_opts$tpl_problemblock <-
         "{{/problems}}",
         "\\end{problems}",
         "\\begin{problemblockpretext}",
-        "{{{problemblockpretext}}}",
+        "{{{posttext}}}",
         "\\end{problemblockpretext}",
         "\\end{problemblock}",
         sep = "\n")
@@ -107,15 +115,15 @@ examiner_opts$tpl_problemblock <-
 examiner_opts$latex_header <-
     c("\\usepackage{amsthm,amsmath,enumitem}",
       "\\theoremstyle{definition}\\newtheorem{problem}{Problem}",
-      ltxnewenv("problemset", "\\par", ""),
+      ltxnewenv("problemset", "", ""),
       ltxnewenv("problemsetpretext", "\\par", ""),
       ltxnewenv("problemsetposttext", "\\par", ""),
-      ltxnewenv("problems", "\\par", ""),
-      ltxnewenv("problemtext", "\\par", ""),
+      ltxnewenv("problems", "", ""),
+      ltxnewenv("problemtext", "", ""),
       ltxnewenv("solution", "\\par \\color{blue}", ""),
-      ltxnewenv("problemblock", "\\par", ""),
+      ltxnewenv("problemblock", "", ""),
       ltxnewenv("correctanswer", "\\color{blue} (*) ", ""),      
-      ltxnewenv("wronganswer", "", "\\color{red}"),      
+      ltxnewenv("wronganswer", "", ""),
       ltxnewenv("problemblockpretext", "\\par", ""),
       ltxnewenv("problemblockposttext", "\\par", ""),
       "\\newlist{answers}{enumerate}{1}",
@@ -263,7 +271,8 @@ problemblock <- function(problems, pretext = "", posttext = "", randomizable = F
 }
 
 #' @export
-format.problemblock <- function(x, shuffle_problems = FALSE,
+format.problemblock <- function(x,
+                                shuffle_problems = FALSE,
                                 shuffle_answers = FALSE,
                                 show_solutions = FALSE,
                                 N1 = 1L,

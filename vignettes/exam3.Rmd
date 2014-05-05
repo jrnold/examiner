@@ -1,6 +1,6 @@
 <!--
 %\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{exam3}
+%\VignetteIndexEntry{Example Exam 3}
 -->
 
 # Final: The Bridge of Death

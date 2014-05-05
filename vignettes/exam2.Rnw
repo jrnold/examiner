@@ -1,9 +1,8 @@
 %\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{exam2}
+%\VignetteIndexEntry{Example Exam 2}
 \documentclass{article}
 
-\title{Final: The Bridge of Death}
-\author{Bridgekeeper}
+\title{Example Exam 2}
 
 <<echo = FALSE,results = 'hide'>>=
 options(width = 40)

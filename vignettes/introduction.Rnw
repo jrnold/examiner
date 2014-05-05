@@ -2,12 +2,13 @@
 %\VignetteIndexEntry{Introduction to the examiner package}
 \documentclass{article}
 
-\title{Examiner Package}
+\title{Introduction to the \textbf{examiner} Package}
 \author{Jeffrey B. Arnold}
 
 \newcommand{\RLang}{\textsf{R}}
 \usepackage{enumitem}
-\setlist[description]{font=\ttfamily,noitemsep}
+\newlist{varlist}{description}{1}
+\setlist[varlist]{font=\ttfamily, noitemsep, leftmargin=*, labelindent=16pt}
 
 \usepackage{hyperref}
 
@@ -23,10 +24,13 @@ cat(examiner::examiner_latex_header())
 \begin{document}
 \maketitle{}
 
-\textbf{examiner} is a small package that can be used to create multi-choice exams.
-It allows for the flexible formatting of the questions, and the ability to shuffle both questions and answers within questions.
+\section{Introduction}
+\label{sec:introduction}
 
-Questions are stored in a yaml file, more details of which are discussed in Section \ref{sec:problems}.
+\textbf{examiner} is a lightweight, flexible package to create multiple-choice exams.
+It allows for flexible formatting of the questions, and the ability to shuffle the order of both questions and answers within questions.
+
+By default, questions are written and stored in a yaml file, more details of which are discussed in Section \ref{sec:problems}.
 The yaml file converted into a \verb|problemset| object with the function \verb|problemset_from_yaml|.
 <<echo = TRUE, results = 'asis'>>=
 library("examiner")
@@ -43,27 +47,28 @@ cat(format(problems))
 
 @ 
 
-The order of the answers within each problem can be randomized by setting the option \texttt{shuffle\_answers = TRUE},
+The order of the answers within each problem can be randomized with the argument \texttt{shuffle\_answers = TRUE},
+<<echo = TRUE, results = 'asis'>>=
+cat(format(problems, shuffle_answers = TRUE))
+@
+
+The order of problems can be randomized with the argument \texttt{shuffle\_problems = TRUE},
 <<echo = TRUE, results = 'asis'>>=
 cat(format(problems, shuffle_problems = TRUE))
 @ 
 
-The order of problems can be randomized by setting the option \texttt{shuffle\_problems = TRUE},
-<<echo = TRUE, results = 'asis'>>=
-cat(format(problems, shuffle_answers = TRUE))
-@ 
-
-The solutions to the problems are shown if \texttt{show\_solutions = TRUE}
+The solutions to the problems are shown if \texttt{show\_solutions = TRUE},
 <<echo = TRUE, results = 'asis'>>=
 cat(format(problems, show_solutions = TRUE))
 @ 
 
-\section{Problemset Format}
+\section{Problemset File Format}
 \label{sec:problems}
 
-The default way of storing problem sets is in a \href{http://www.yaml.org/}{yaml} file.
-Yaml is a nice compromise between a human and computer readable format.
-An example questions file is included with the package (\texttt{yaml/questions.yaml}) and looks like this,
+The default way of storing problem sets is in a yaml formatted file.
+Details of the yaml format can be found at \href{http://yaml.org/}{yaml.org}, and the package \href{http://cran.fhcrc.org/web/packages/yaml/index.html}{yaml} implements a yaml reader and writer for R.
+Yaml was chosen because it is a nice compromise between a human and computer readable format.
+An example questions file is included with the package, \texttt{yaml/questions.yaml}, and looks like this,
 <<results = 'markup', highlight = FALSE, comment = "", echo = FALSE>>=
 library("stringr")
 cat(str_c(readLines(system.file("yaml/questions.yaml", 
@@ -72,20 +77,21 @@ cat(str_c(readLines(system.file("yaml/questions.yaml",
                                                
 @ 
 
-For a more complex example that includes both \texttt{problems} and \texttt{problemlock} objects see \texttt{yaml/questions2.yaml} (output not shown here).
+For a more complex example that includes both \texttt{problems} and \texttt{problemlock} objects see \texttt{yaml/questions2.yaml} (output not shown here):
 <<eval=FALSE>>=
 cat(str_c(readLines(system.file("yaml/questions.yaml", 
                                 package = "examiner")),
           collapse = "\n"))
 @ 
 
-A single yaml document is assumed to map to a single \texttt{problemset} object.
-The format of the various blocks transparently map into the arguments in \texttt{problemset}, \texttt{problem}, and \texttt{problemblock}.
+A single yaml document is assumed to represent a single \texttt{problemset} object.
+The format of the various blocks in the yaml file transparently map into the arguments of the \texttt{problemset}, \texttt{problem}, and \texttt{problemblock} functions to produce objects of those classes.
 Optional arguments do not need to be included, and will be set to the defaults in those functions.
 Most notably, if \texttt{correct} is missing, the first element in the \texttt{answers} list is assumed to be correct.
+To allow for multiple correct answers, simply make \texttt{correct} a vector with the indices of the correct answers in \texttt{answers}.
 
-Note that \texttt{problemset\_from\_yaml} simply uses \texttt{yaml.load\_file} to load the file, and \texttt{problemset\_from\_list} to convert it into a list.
-Other file formats could be supported as long as a function is written to load the data and return a \texttt{problemset} object.
+Note that \texttt{problemset\_from\_yaml} simply uses \texttt{yaml.load\_file} to load the file, and \texttt{problemset\_from\_list} to onvert it into a list.
+All that is required to support another format is a function that returns a \texttt{problemset} object.
 
 \section{\LaTeX{} environments}
 
@@ -93,30 +99,18 @@ Using the default settings, \texttt{format} command generates the following \LaT
 <<echo = FALSE, results = 'markup', highlight = FALSE, comment = "">>=
 cat(format(problems))
 @ 
+Note that the output is enclosed in the environments: \texttt{problemset}, \texttt{problemsetpretext}, \texttt{problemsetposttext}, \texttt{problems}, \texttt{problem}, \texttt{problemtext}, and \texttt{answers}.
+These environments can be defined or redefined to change the look of the problemset.
 
-Note that the rendering encloses the output in the environments \texttt{problemset}, \texttt{problemsetpretext}, \texttt{problemsetposttext}, \texttt{problems}, \texttt{problem}, \texttt{problemtext}, and \texttt{answers}.
-These environments can be redefined to change their style in the document without changing the definitions of functions in \textbf{examiner}.
-Some default definitions for these environments are included in the package, and can be accessed through the function \texttt{examiner\_latex\_header}:
+The default definitions for these environments are included in the package, and can be accessed through the function \texttt{examiner\_latex\_header}:
 <<>>=
 cat(examiner_latex_header())
 @ 
-A call to \verb|examiner_latex_header| was placed in a knitr chunk in this document in order to render the questions in the earlier section.
+This can be placed in a knitr chunk with option \texttt{results='asis'} in order to define the environments.
 
-\section{Formatting and Templates}
 
-The formatting of problemsets is determined by the \texttt{format} methods for the classes defined in this package: \texttt{problemset}, \texttt{problemblock}, \texttt{problem}
-
-The rendering of R objects into text is controlled by several \textbf{whisker} templates.
-The \textbf{whisker} package is an R implementation of the \href{http://mustache.github.io/}{mustache} templating system.
-See that package and the mustache website for details of the format.
-
-These templates are stored in the environment \texttt{examiner\_opt}.
-\begin{itemize}
-\item \texttt{tpl\_problemset} Formats \texttt{problemset} objects
-\item \texttt{tpl\_problemblock} Formats \texttt{problemblock} objects
-\item \texttt{tpl\_problem} Formats \texttt{problem} objects
-\item \texttt{tpl\_answers} Formats \texttt{answer} objects (contained in \texttt{answers}).
-\end{itemize}
+\section{Format and Templates}
+\label{sec:format-templates}
 
 \newcommand{\examinerNOne}{\item[N1] Problem number (top level \texttt{problem} or \texttt{problemblock} objects).}
 \newcommand{\examinerNOneA}{\item[N1a] Output of \texttt{examiner\_opts\$format\_N1(N1)}}.
@@ -126,6 +120,56 @@ These templates are stored in the environment \texttt{examiner\_opt}.
 \newcommand{\examinerNZeroA}{\item[N0a] Output of \texttt{examiner\_opts\$format\_N0(N0)}}
 \newcommand{\examinerShowSolutions}{\item[show\_solutions] \texttt{logical}. Whether to show solutions.}
 
+The formatting of problemsets is controlled by the \texttt{format} methods for the classes defined in this package: \texttt{problemset}, \texttt{problemblock}, \texttt{problem}, and \texttt{answerlist}.
+Each of these methods creates the output by combining data from the object and function arguments with a \texttt{whisker} template. 
+The \textbf{whisker} package is an R implementation of the \href{http://mustache.github.io/}{mustache} templating system.
+Read the \texttt{whisker} package documentation and the mustache website before continuing.
+
+This allows for easy customization of the output of these functions through the definition of the templates used to render the output text.
+For example, this will render the problems in Markdown,
+<<>>=
+tpl_problem <-
+    str_c("{{{text}}}", "\n",
+          "{{{answers}}}", 
+          sep = "\n")
+
+tpl_answerlist <-
+    str_c("{{#answers}}",
+          "    1. {{{text}}}",
+          "{{/answers}}",
+          sep = "\n")
+
+tpl_problemset <-
+    str_c(
+        "{{{pretext}}}\n",
+        "{{#problems}}",
+        "1. {{{.}}}",
+        "{{/problems}}",
+        "\n{{{posttext}}}",
+        sep = "\n")
+
+tpl_problemblock <-
+    str_c(
+        "    {{{pretext}}}\n",
+        "    {{#problems}}",
+        "        1. {{{.}}}",
+        "    {{/problems}}",
+        "    {{{posttext}}}\n",
+        sep = "\n")
+
+cat(format(problems, 
+           tpl_problem = tpl_problem,
+           tpl_answerlist = tpl_answerlist,
+           tpl_problemset = tpl_problemset,
+           tpl_problemblock = tpl_problemblock
+           ), "\n")
+
+@ 
+
+The data context in which the template is rendered is the object plus arguments to format converted to a list.
+Additionally, \texttt{foramt} is called on all \texttt{answerlist}, \texttt{problem} or \texttt{problemset} in it.
+The following sections describe the templates the data used in each.
+
 \subsection{answerlist}
 
 The default template used to format \texttt{answerlist} objects is:
@@ -134,7 +178,7 @@ cat(examiner_opts$tpl_answers)
 @ 
 
 The data which is passed to \texttt{tpl\_answerlist} is a list with these elements:
-\begin{description}
+\begin{varlist}
 \item[answers] list of list objects generated from calling \texttt{rowSplit} on the \texttt{answerlist} object.
 \examinerNZero{}
 \examinerNZeroA{}
@@ -143,7 +187,7 @@ The data which is passed to \texttt{tpl\_answerlist} is a list with these elemen
 \examinerNTwo{}
 \examinerNTwoA{}
 \examinerShowSolutions{}
-\end{description}
+\end{varlist}
 
 \subsection{problem}
 
@@ -152,7 +196,7 @@ The default template used to format \texttt{problem} objects is
 cat(examiner_opts$tpl_problem)
 @ 
 The data which is passed to template is the  \texttt{problem} object converted into a list with the following additions and changes:
-\begin{description}
+\begin{varlist}
 \item[answers] \texttt{character}. Output of calling \texttt{format} on the \texttt{answers} element.
 \examinerNZero{}
 \examinerNZeroA{}
@@ -161,7 +205,7 @@ The data which is passed to template is the  \texttt{problem} object converted i
 \examinerNTwo{}
 \examinerNTwoA{}
 \examinerShowSolutions{}
-\end{description}
+\end{varlist}
 
 \subsection{problemblock}
 
@@ -170,12 +214,12 @@ The default template used to format \texttt{problemblock} objects is:
 cat(examiner_opts$tpl_problemblock)
 @ 
 The data which is passed to the template is the  \texttt{problemblock} object converted into a list with the following additions and changes:
-\begin{description}
+\begin{varlist}
 \item[answers] \texttt{character}. Output of calling \texttt{format} on the \texttt{problems} element.
 \examinerNZero{}
 \examinerNZeroA{}
 \item Other elements in the \texttt{problemblock} object.
-\end{description}
+\end{varlist}
 
 \subsection{problemset}
 
@@ -184,10 +228,10 @@ The default template used to format \texttt{problemset} objects is
 cat(examiner_opts$tpl_problembset)
 @ 
 The data which is passed to template is the  \texttt{problemset} object converted into a list with the following additions and changes:
-\begin{description}
+\begin{varlist}
 \item[problems] A \texttt{character} vector created by calling \texttt{format} on each element in \texttt{problems}.
 \item Other elements in the \texttt{problemblock} object.
-\end{description}
+\end{varlist}
 
 \section{Example}
 
