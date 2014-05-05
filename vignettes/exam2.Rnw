@@ -17,6 +17,9 @@ cat(examiner::examiner_latex_header())
 @ 
 
 \begin{document}
+<<>>=
+print(knitr::opts_chunk[["get"]]("dev"))
+@ 
 
 \maketitle{}
 

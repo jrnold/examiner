@@ -23,6 +23,15 @@ cat(examiner::examiner_latex_header())
 \begin{document}
 \maketitle{}
 
+<<>>=
+for (i in grep("^tpl_", ls(examiner_opts), value = TRUE)) {
+    print(i)
+    cat(examiner_opts[[i]])
+}
+print(knitr::opts_chunk[["get"]]("dev"))
+
+@ 
+
 \textbf{examiner} is a small package that can be used to create multi-choice exams.
 It allows for the flexible formatting of the questions, and the ability to shuffle both questions and answers within questions.
 
@@ -101,13 +110,6 @@ These templates are stored in the environment \texttt{examiner\_opt}.
 \item \texttt{tpl\_answers} Formats \texttt{answer} objects (contained in \texttt{answers}).
 \end{itemize}
 
-Changing these templates controls how the questions are formatted. 
-The default values of these templates are:
-<<>>=
-cat(examiner_opts$tpl_problemset)
-cat(examiner_opts$tpl_problemblock)
-cat(examiner_opts$tpl_problemb)
-@ 
 When  combined with the data from \texttt{questions.yaml}, this generates the \LaTeX output,
 <<echo = FALSE, results = 'markup', highlight = FALSE, comment = "">>=
 cat(format(problems))
@@ -195,7 +197,7 @@ The context in which \texttt{tpl\_problemblock} is evaluated is the \texttt{prob
 \item Other elements in the \texttt{problemblock} object.
 \end{description}
 
-\subsection{}
+\subsection{Customizing Templates}
 
 These templates can be redefined to customize how the problems are rendered.
 For example, this changes the templates to render the problems in Markdown:
