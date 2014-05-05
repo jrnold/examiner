@@ -7,7 +7,8 @@
 
 \newcommand{\RLang}{\textsf{R}}
 \usepackage{enumitem}
-\setlist[description]{font=\ttfamily,noitemsep}
+\newlist{varlist}{description}{1}
+\setlist[varlist]{font=\ttfamily, noitemsep, leftmargin=*, labelindent=16pt}
 
 \usepackage{hyperref}
 
@@ -49,7 +50,7 @@ cat(format(problems))
 The order of the answers within each problem can be randomized with the argument \texttt{shuffle\_answers = TRUE},
 <<echo = TRUE, results = 'asis'>>=
 cat(format(problems, shuffle_answers = TRUE))
-@ 
+@
 
 The order of problems can be randomized with the argument \texttt{shuffle\_problems = TRUE},
 <<echo = TRUE, results = 'asis'>>=
@@ -177,7 +178,7 @@ cat(examiner_opts$tpl_answers)
 @ 
 
 The data which is passed to \texttt{tpl\_answerlist} is a list with these elements:
-\begin{description}
+\begin{varlist}
 \item[answers] list of list objects generated from calling \texttt{rowSplit} on the \texttt{answerlist} object.
 \examinerNZero{}
 \examinerNZeroA{}
@@ -186,7 +187,7 @@ The data which is passed to \texttt{tpl\_answerlist} is a list with these elemen
 \examinerNTwo{}
 \examinerNTwoA{}
 \examinerShowSolutions{}
-\end{description}
+\end{varlist}
 
 \subsection{problem}
 
@@ -195,7 +196,7 @@ The default template used to format \texttt{problem} objects is
 cat(examiner_opts$tpl_problem)
 @ 
 The data which is passed to template is the  \texttt{problem} object converted into a list with the following additions and changes:
-\begin{description}
+\begin{varlist}
 \item[answers] \texttt{character}. Output of calling \texttt{format} on the \texttt{answers} element.
 \examinerNZero{}
 \examinerNZeroA{}
@@ -204,7 +205,7 @@ The data which is passed to template is the  \texttt{problem} object converted i
 \examinerNTwo{}
 \examinerNTwoA{}
 \examinerShowSolutions{}
-\end{description}
+\end{varlist}
 
 \subsection{problemblock}
 
@@ -213,12 +214,12 @@ The default template used to format \texttt{problemblock} objects is:
 cat(examiner_opts$tpl_problemblock)
 @ 
 The data which is passed to the template is the  \texttt{problemblock} object converted into a list with the following additions and changes:
-\begin{description}
+\begin{varlist}
 \item[answers] \texttt{character}. Output of calling \texttt{format} on the \texttt{problems} element.
 \examinerNZero{}
 \examinerNZeroA{}
 \item Other elements in the \texttt{problemblock} object.
-\end{description}
+\end{varlist}
 
 \subsection{problemset}
 
@@ -227,9 +228,9 @@ The default template used to format \texttt{problemset} objects is
 cat(examiner_opts$tpl_problembset)
 @ 
 The data which is passed to template is the  \texttt{problemset} object converted into a list with the following additions and changes:
-\begin{description}
+\begin{varlist}
 \item[problems] A \texttt{character} vector created by calling \texttt{format} on each element in \texttt{problems}.
 \item Other elements in the \texttt{problemblock} object.
-\end{description}
+\end{varlist}
 
 \end{document}
