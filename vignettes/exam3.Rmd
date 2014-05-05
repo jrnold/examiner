@@ -1,60 +1,53 @@
 <!--
 %\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{exam3}
+%\VignetteIndexEntry{Example Exam 3}
 -->
 
 # Final: The Bridge of Death
 
-```{r echo = FALSE,results = 'hide'}
+```{r echo = FALSE, results = 'hide'}
 options(width = 40)
 knitr::opts_chunk[["set"]](tidy = FALSE)
 set.seed(13224)
 library("examiner")
 library("stringr")
 
-examiner_opts$tpl_problem <-
+tpl_problem <-
     str_c("{{{text}}}", "\n",
           "{{{answers}}}", 
           sep = "\n")
 
-examiner_opts$tpl_answers <-
+tpl_answerlist <-
     str_c("{{#answers}}",
-          "    1. {{{text}}}",
+          "1. {{{text}}}",
           "{{/answers}}",
           sep = "\n")
 
-examiner_opts$tpl_problemset <-
-    str_c(
-        "{{{pretext}}}\n",
-        "{{#problems}}",
-        "1. {{{.}}}",
-        "{{/problems}}",
-        "\n{{{posttext}}}",
-        sep = "\n")
+tpl_problemset <-
+    str_c("{{{pretext}}}\n",
+          "{{#problems}}",
+          "{{{.}}}",
+          "{{/problems}}",
+          "\n{{{posttext}}}",
+          sep = "\n")
 
-examiner_opts$tpl_problemblock <-
-    str_c(
-        "    {{{pretext}}}\n",
-        "    {{#problems}}",
-        "    1. {{{.}}}",
-        "    {{/problems}}",
-        "    {{{posttext}}}\n",
-        sep = "\n")
-	
+tpl_problemblock <-
+    str_c("{{{pretext}}}\n",
+          "{{#problems}}",
+          "{{{.}}}",
+          "{{/problems}}",
+          "{{{posttext}}}\n",
+          sep = "\n")
 ```
 
 ```{r, echo = FALSE, results = 'asis'}
-
 problems <- 
-    problemset_from_yaml(system.file("example/questions2.yaml", 
+    problemset_from_yaml(system.file("yaml/questions2.yaml", 
                                      package = "examiner"))
-cat(format(problems))
-```
-
-```{r}
-for (i in ls(examiner_opts)) {
-    print(i)
-    print(examiner_opts[[i]])
-}
+cat(format(problems,
+	tpl_answerlist = tpl_answerlist,
+	tpl_problemset = tpl_problemset,
+	tpl_problemblock = tpl_problemblock,
+	tpl_problem = tpl_problem))
 
 ```

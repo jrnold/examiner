@@ -1,9 +1,8 @@
 %\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{exam1}
+%\VignetteIndexEntry{Example Exam 1}
 \documentclass{article}
 
-\title{Final: The Bridge of Death}
-\author{Bridgekeeper}
+\title{Example Exam 1}
 
 <<echo = FALSE,results = 'hide'>>=
 options(width = 40)
@@ -26,7 +25,7 @@ print(knitr::opts_chunk[["get"]]("dev"))
 
 <<echo = FALSE, results = 'asis'>>=
 problems <- 
-    problemset_from_yaml(system.file("example/questions.yaml", 
+    problemset_from_yaml(system.file("yaml/questions.yaml", 
                                      package = "examiner"))
 cat(format(problems))
 

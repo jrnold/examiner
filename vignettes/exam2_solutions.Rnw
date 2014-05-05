@@ -1,8 +1,8 @@
 %\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{exam2 Solutions}
+%\VignetteIndexEntry{Example Exam 2: Solutions}
 \documentclass{article}
 
-\title{Final: The Bridge of Death, Solutions}
+\title{Example Exam 2: Solutions}
 \author{Bridgekeeper}
 \usepackage{hyperref}
 
@@ -23,7 +23,7 @@ cat(examiner::examiner_latex_header())
 
 <<echo = FALSE, results = 'asis'>>=
 problems <- 
-    problemset_from_yaml(system.file("example/questions2.yaml", 
+    problemset_from_yaml(system.file("yaml/questions2.yaml", 
                                      package = "examiner"))
 cat(format(problems, show_solutions = TRUE))
 

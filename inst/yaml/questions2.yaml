@@ -15,7 +15,7 @@ problems:
     answers:
       - To seek the Holy Grail
       - To kill ferocious bunnies
-      - To develop silly walks
+      - To invent silly walks
       - To find the meaning of life
       - I have no quest
     solution: |
@@ -44,7 +44,7 @@ problems:
         answers:
           - To seek the Holy Grail
           - To kill ferocious bunnies
-          - To develop silly walks
+          - To invent silly walks
           - To find the meaning of life
       - text: What is the capital of Assyria? 
         correct: 1
@@ -72,7 +72,7 @@ problems:
         answers:
           - To seek the Holy Grail
           - To kill ferocious bunnies
-          - To develop silly walks
+          - To invent silly walks
           - To find the meaning of life
       - text: What your favorite color?
         correct: 4
@@ -97,7 +97,7 @@ problems:
         answers:
           - To seek the Holy Grail
           - To kill ferocious bunnies
-          - To develop silly walks
+          - To invent silly walks
           - To find the meaning of life
       - text: What is the airspeed of an unladen swallow?
         correct: 5

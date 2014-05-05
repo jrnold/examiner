@@ -2,8 +2,8 @@
 \name{examiner}
 \alias{examiner}
 \alias{examiner-package}
-\title{examiner.}
+\title{examiner package}
 \description{
-examiner.
+A package to assist in the creation of multiple choice exams.
 }
 

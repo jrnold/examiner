@@ -1,27 +1,471 @@
----
-pretext: "Who would cross the Bridge of Death must answer me these questions three, 'ere the other side he see."
-posttext: "Arrrrrrrrrrrrrgh!"
-problems:
-  - text: What is your name?
-    correct: 2
+problems: 
+  - text: |
+      In inferential statistics, a \ulspace{2cm} of the \ulspace{2cm} is used to make a prediction
+      about a \ulspace{2cm} of the \ulspace{2cm}.
     answers:
-      - Sir Launcelot of Camelot
-      - Arthur, King of the Britons
-      - Sir Robin of Camelot
-      - Sir Bedevere
-      - Sir Galahad of Camelot
-  - text: What is your quest?
-    correct: 1
+      - "statistic, sample, parameter, population"
+      - "sample, population, parameter, statistic"
+      - "sample, population, statistic, parameter"
+      - "sample, parameter, statistic, population"
+      - "None of the other choices are correct."
+
+  - text: |
+      Statistics, as defined in Agresti and Finlay, does \textbf{NOT} provide methods for
+    
     answers:
-      - To seek the Holy Grail
-      - To kill ferocious bunnies
-      - To develop silly walks
-      - To find the meaning of life
-  - text: What is the airspeed of an unladen swallow?
+      - "Finding important and interesting questions."
+      - "Planning how to gather data."
+      - "Summarizing data."
+      - "Making predictions based on data."
+      - "It provides methods for all of the other choices."
+
+  - text: |
+      What does it mean when we say that a variable has been ``operationalized?''
+    answers:
+      - That the variable has been measured.
+      - That the variable has been turned into an independent variable in a theory.
+      - That the variable has been named.
+      - None of the other choices are correct.
+
+  - text: |
+      Which of the following causal statements is the most parsimonious and general?
+    answers:
+      -  When the economy is faring poorly, incumbent politicians tend to do poorly in elections.
+      -  When inflation is higher, US House of Representative members from wealthy districts tend to fare poorly in elections.
+      -  In countries with high union density, unemployment is negatively related to incumbent party vote percentage.
+      -  In the 1992 US Presidential election, the ailing economy cost George H.W. Bush the election.
+
+  - text: |
+      Which of the following is \textbf{NOT} a problem with an experimental
+      research design?
+
+    answers:
+      -  Random assignment of the treatment results in confounding variables.
+      -  It may be impossible to randomly assign treatments.
+      -  The sample used in the experiment may not be representative of the population.
+      -  The treatment of the experiment may not resemble the independent variable in the theory.
+      -  It may be unethical to perform some experiments.
+
+  - text: |
+      Consider the theory that democracy causes trade openness.
+      The variable ``democracy'' is a
+
+    answers:
+      -  independent variable.
+      -  confounding variable.
+      -  dependent variable.
+      -  exogenous variable.
+      -  None of the the other options.
+
+  - text: |
+      Reconsider the theory that democracy causes trade openness.
+      Suppose that the income level of a country causes both democracy and trade openness.
+      The variable ``income level'' is a
+
+    answers:
+      -  confounding variable.
+      -  independent variable.
+      -  dependent variable.
+      -  exogenous variable.
+      -  None of the the other options.
+
+  - text: |
+      Consider a theory that $X$ causes $Y$.
+      For a variable to be a confounding variable it must be associated with
+
+    answers:
+      - both $X$ and $Y$.
+      - $X$.
+      - $Y$.
+      - either $X$ or $Y$.
+      - neither $X$ nor $Y$.
+
+  - text: |
+      Which of the following is \textbf{NOT} a step in the experimental method?
+
+    answers:
+      -  All are part of the experimental method
+      -  Randomly assign individuals to groups
+      -  Administer treatments
+      -  Measure responses
+      -  Compare responses of the groups
+
+  - text: |
+      In a randomized experiment, the researcher \ulspace{2cm} the assignment of the treatment, and the treatment is \ulspace{2cm} assigned.
+
+    answers:
+      -  controls, randomly
+      -  controls, non-randomly
+      -  does not control, randomly
+      -  does not control, non-randomly
+
+  - text: |
+      In a \textbf{natural} experiment, the researcher \ulspace{2cm} the assignment of the treatment, and the treatment is (plausibly) \ulspace{2cm} assigned.
+
+    answers:
+      -  does not control, randomly
+      -  controls, randomly
+      -  controls, non-randomly
+      -  does not control, non-randomly
+
+
+  - text: |
+      Suppose that a researcher conducts a well-designed experiment.
+      The results of the experiment show covariation between $X$ and $Y$.
+      Which causal hurdle has not yet been overcome?
+
+    last: 1
+    answers:
+      -  Is there a credible causal mechanism that connects $X$ to $Y$?
+      -  Have we controlled for confounding variables that might make the association between $X$ and $Y$ spurious?
+      -  Can we rule out the possibility that $Y$ could cause $X$ ?
+      -  Is there covariation between $X$ and $Y$ ?
+      -  All of the causal hurdles have been overcome.
+
+  - text: |
+      Which of these datasets is time series data?
+
+    answers:
+      -  Daily average of a stock market index.
+      -  Members of Congress of the 113th U.S. Congress.
+      -  50 U.S. states.
+      -  Survey of individual voters in the 2012 Presidential election.
+      -  GDP per capita of countries in the OECD.
+
+  - text: |
+      Which of the following is most likely to be an advantage of an observational study over an experiment.
+
+    answers:
+      -  Higher external validity
+      -  Higher internal validity
+      -  Lower external validity
+      -  Less concern about confounding variables
+      -  It automatically provides a causal mechanism
+
+
+  - text: |
+      If a measure of a concept is correlated with a measure of another concept in a way that a theory predicts,
+      then the measure of the first concept is said to possess which of the following characteristics?
+
+    last: 1
+    answers:
+      -  Construct validity
+      -  Face validity
+      -  Content validity
+      -  Reliability
+      -  None of these options
+
+
+  - text: |
+      The concept of democracy includes both political contestation and participation.
+      A popular measure of democracy is the Polity IV score.
+      While the Polity IV score includes various indicators of political contestation, it does not include indicators of participation.
+      Based on this description, a potential problem with the Polity IV score is with its
+
+    last: 1
+    answers:
+      -  Content validity
+      -  Face validity
+      -  Construct validity
+      -  Reliability
+      -  None of these options
+
+  - text: |
+      You are assessing four different measurement methodologies.
+      You take repeated measurements using each of these methodologies and plot them against the true value of the phenomena of interest in Figure~\ref{fig:validity_reliability}.
+      Which of these would you characterize as having \textbf{high validity} but \textbf{low reliability}?
+
+    randomizable: false
+    correct: 3
+    answers:
+      -  1
+      -  2
+      -  3
+      -  4
+
+
+  - text: |
+      In 1936, a \textit{Literary Digest} survey on the U.S. presidential election used a sample that consisted of its subscribers, registered automobile owners, and phone owners.
+      Before the election it predicted that F.D.R. would receive 43\% of the vote.
+      In the election, F.D.R. received 57\% of the vote and won in a landslide.
+      What was the primary problem with this survey?
+
+    last: 1
+    answers:
+      -  It used a non-random sample
+      -  Its sample size was too large
+      -  Its sample size was too small
+      -  It used a random sample
+      -  None of these were problems
+
+
+  - text: |
+      Which of the following would be the closest to a probability sample
+      for estimating support for sales tax in Atlanta?
+
+    
+    answers:
+      -  Calling randomly selected phone numbers in Atlanta area codes.
+      -  Standing on street corners in Midtown and asking random passers-by.
+      -  Asking your friends if they know anyone who supports the sales tax.
+      -  "Comparing the number of Twitter responses containing \\texttt{\\#supportATLtax} to those containing \\texttt{\\#opposeATLtax}."
+
+
+  - text: |
+      Which of the following is an interval variable?
+
+    answers:
+      -  Tuition cost (dollars)
+      -  "Latin honors (\\emph{cum laude}, \\emph{magna cum laude}, \\emph{summa cum laude})"
+      -  Sexual orientation (heterosexual, homosexual, other)
+      -  Household income ("\textless \$10,000", "\$10,000--\$100,000", "$>$ \$100,000")
+      -  Frequency of blood donation (annually, never, weekly, monthly)
+
+  - text: |
+      Which of the following is an ordinal variable?
+
+    answers:
+      -  "Latin honors (\\emph{cum laude}, \\emph{magna cum laude}, \\emph{summa cum laude})"
+      -  Tuition cost (dollars)
+      -  Volume of blood given last month (milliliters)
+      -  Religious identification (Catholic, Muslim, non-religious, ...)
+      -  States ("AR", "AZ", ..., "WY")
+
+  - text: |
+      Consider the data \texttt{\{red, blue, green, blue, green, blue, blue\}}.
+      What is the mode of this sample?
+
+    last: 1
+    answers:
+      -  blue
+      -  red
+      -  green
+      -  7
+      -  Not defined for this type of variable.
+
+  - text: |
+      Consider the data \texttt{\{red, blue, green, blue, green, blue, blue\}}.
+      What is the median of this sample?
+
     correct: 5
+    last: 1
     answers:
-      - 25 mph
-      - 20 mph
-      - 30 mph
-      - 40 mph
-      - "African or European?"
+      -  red
+      -  blue
+      -  green
+      -  7
+      -  Not defined for this type of variable.
+
+  - text: |
+      Consider the data \texttt{\{red, blue, green, blue, green, blue, blue\}}.
+      What is the mean of this sample?
+
+    correct: 5
+    last: 1
+    answers:
+      -  red
+      -  blue
+      -  green
+      -  7
+      -  Not defined for this type of variable.
+
+
+  - text: |
+      Consider the data: $\{0, 6, 3, 1, 0\}$. What is the mode of this
+      sample?
+      
+    last: 1
+    answers:
+      -  0
+      -  1
+      -  2
+      -  3
+      -  Not defined for this type of variable
+
+
+  - text: |
+      Consider the data: $\{0, 6, 3, 1, 0\}$. What is the median of this
+      sample?
+
+    last: 1
+    answers:
+      -  1
+      -  0
+      -  2
+      -  3
+      -  Not defined for this type of variable
+
+
+  - text: |
+      Consider the data $\{0, 6, 3, 1, 0\}$. What is the mean of this
+      sample?
+
+    last: 1
+    answers:
+      -  2
+      -  0
+      -  1
+      -  3
+      -  Not defined for this type of variable
+
+
+  - text: |
+      Consider the data $\{0, 6, 3, 1, 0\}$.
+      What equation shows the variance of this sample?
+
+    last: 1
+    answers:
+      -  "$\\frac{1}{4} ((0 - 2)^2 + (6 - 2)^2 + (3 - 2)^2 + (1 - 2)^2 + (0 - 2)^2)$"
+      -  "$\\frac{1}{5} (0 + 6 + 3 + 1 + 0)$"
+      -  "$\\frac{1}{5} ((0 - 1)^2 + (6 - 1)^2 + (3 - 1)^2 + (1 - 1)^2 + (0 - 1)^2)$"
+      -  "$\\frac{1}{4} ((0 - 2) + (6 - 2) + (3 - 2) + (1 - 2) + (0 - 2))$"
+      -  None of the above
+
+
+  - text: |
+      Which of these statistics is not a measure of central tendency?
+
+    last: 1
+    answers:
+      -  variance
+      -  mean
+      -  median
+      -  mode
+      -  they are all measures of central tendency
+
+  - text: |
+      For the data displayed in Figure~\ref{fig:gamma}, what is the relationship between the mode, median and mean?
+
+    answers:
+      -  mean \textless{} median \textless{} mode
+      -  mode \textless{} median \textless{} mean
+      -  mode = median = mean
+      -  median = mode \textless{} mean
+      -  mean \textless{} mode \textless{} median
+
+
+  - text: |
+      What is the best description of the shape of the distribution in Figure~\ref{fig:bimodal}?
+
+    answers:
+      -  bimodal
+      -  bell-shaped
+      -  left-skewed
+      -  right-skewed
+      -  unimodal
+
+
+  - text: |
+      Suppose you have data with the following percentiles:
+      \begin{center}
+      \begin{tabular}{lllllllll}
+      0\% & 5\%  & 10\% & 25\% & 50\% & 75\% & 90\% & 95\% & 100\% \\
+      \hline
+      -5  & -4.5 & -3   & -2   &    0 &    1 &    2 & 2.5  &   8
+      \end{tabular}
+      \end{center}
+      What is the value of the interquartile range?
+
+    answers:
+      -  3
+      -  1
+      -  13
+      -  5
+      - 7
+
+  - text: |
+      What is the median of the data plotted in Figure~\ref{fig:boxplot}?
+
+    answers:
+      -  1
+      -  2
+      -  0
+      -  -2
+      -  4
+
+
+  - text: |
+      For the data plotted in Figure~\ref{fig:boxplot}, which of these values is an outlier?
+
+    answers:
+      -  -3
+      -  -2
+      -  0
+      -  3
+      -  1
+
+  - text: |-
+      Suppose the variance of a sample is 16.
+      What is the standard deviation?
+
+    answers:
+      - 4
+      - 8
+      - 32
+      - 64
+      - None of these
+
+
+  - text: |
+      Campaign donations for Rep.~Frank Underwood are distributed with
+      mean \$400 and standard deviation \$150. What is the z-score of a
+      campaign donation of \$100?
+
+    answers:
+      -  -2 
+      -  100
+      -  150
+      -  2
+      -  1
+
+
+  - text: |
+      The distribution of the speeds of cars driving down the highway has a mean of 70 m.p.h. and a standard deviation of 5.
+      Suppose an observation of the speed of a car has a z-score of 1.5.
+      This means that the speed of that car is 1.5 \ulspace{1cm} above the \ulspace{1cm}.
+
+    last: 1
+    answers:
+      -  standard deviations, mean
+      -  m.p.h, mean
+      -  standard deviations, median
+      -  means, standard deviations
+      -  None of these
+
+  - text: |
+      A sample of data is distributed approximately bell shaped with a mean of 2 and a standard deviation of 4.
+      Approximately what percent of the observations are between -2 and 6?
+
+    answers:
+      -  68
+      -  95
+      -  99.7
+      -  100
+      -  5
+
+  - text: |
+      Some data is distributed approximately bell shaped with a mean of 2 and a standard deviation of 4.
+      Approximately what percent of the observations are less than -6 or greater than 10?
+
+    answers:
+      -  5
+      -  95
+      -  68
+      -  32
+      -  47.5
+
+  - text: |
+      \textbf{(Bonus)} Which of these is not a possible value for a standard deviation?
+
+    answers:
+      -  -1
+      -  1
+      -  $\frac{1}{4}$
+      -  "10,000"
+      -  "0.0001"
+
+
+#  LocalWords:  2cm Agresti contestation texttt supportATLtax emph ''
+#  LocalWords:  opposeATLtax laude magna summa boxplot outlier RCT
+#  LocalWords:  OECD ulspace 2cm textbf level'' textit textless frac
+#  LocalWords:  lllllllll hline 1cm

@@ -8,7 +8,6 @@ examiner_latex_header()
 A character vector with the header
 }
 \description{
-This renders the contents of
-\code{opts_examiner$get('header')}.
+This renders the contents of \code{opts_examiner$get('header')}.
 }
 

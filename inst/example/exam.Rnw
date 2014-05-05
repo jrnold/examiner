@@ -1,0 +1,295 @@
+\documentclass[11pt, article, oneside]{memoir}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{multicol}
+\usepackage{fancyvrb}
+\usepackage{graphicx}
+
+\counterwithout{section}{chapter}
+
+<<echo = FALSE, results = 'hide'>>=
+if (IS_SOLUTION) {
+    fig.path <- paste0("figure/solution-", VERSION, "-")
+} else {
+    fig.path <- paste0("figure/test-", VERSION, "-")
+}
+knitr::opts_chunk[["set"]](echo = FALSE, message = FALSE, warning = FALSE, error = FALSE,
+                           fig.width = 6.5, fig.height = 3.5, 
+                           fig.path = fig.path,
+                           fig.pos = "htbp!")
+ 
+@ 
+% 
+
+<<results = 'hide'>>=
+suppressPackageStartupMessages({
+    library("ggplot2")
+    library("mvtnorm")
+    library("plyr")
+    library("stringr")
+    
+    library("examiner")
+})
+
+theme_local <- function(base_size = 7) {
+    theme_bw(base_size = base_size)
+}
+
+set.seed(SEED)
+
+points <- function(x) {
+    str_c("\\points{", x, "}")
+}
+
+latexmacro <- function(x, ...) {
+    str_c("\\", x, "{", str_c(..., sep = "}{", collapse = "}{"), "}", sep = "")
+}
+
+vspace <- function(x) latexmacro("vspace", x)
+
+
+
+# Dataset 
+mcq <- problemset_from_yaml("./questions.yaml")
+@ 
+
+
+<<results = 'asis', echo = FALSE>>=
+cat(examiner_latex_header())
+@ 
+
+\usepackage[section]{placeins}
+
+\newcommand{\ulspace}[1]{\underline{\hspace{#1}}}
+\theoremstyle{definition}
+\newtheorem{question}{Q}
+
+\usepackage{mathspec}
+\usepackage{xunicode}
+\defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+\setsansfont{Linux Biolinum O}
+\setmainfont[Numbers=OldStyle]{Linux Libertine O}
+\setmonofont{Source Code Pro}
+
+\newcommand{\examdate}{\today{}}
+\date{\examdate}
+\author{}
+
+\usepackage[plainpages=false, 
+            pdfpagelabels, 
+            bookmarksnumbered,
+            unicode,
+            pdftitle={Political Methods Exam \Sexpr{if (IS_SOLUTION) paste0("Solutions ", VERSION)}},
+            pdfauthor={Jeffrey B. Arnold},
+            pdfkeywords={statistics, exam},
+            colorlinks=true,
+            citecolor=gray,
+            linkcolor=black,
+            urlcolor=gray]{hyperref} 
+
+% Title flush left
+\title{Political Methods Exam \Sexpr{if (IS_SOLUTION) paste0("Solutions ", VERSION)}}
+\pretitle{\begin{flushleft}\sffamily\LARGE\bfseries}
+\posttitle{\end{flushleft}}
+
+\preauthor{\begin{flushleft} \normalsize}
+\postauthor{\end{flushleft}}
+
+\predate{\begin{flushleft}}
+\postdate{\end{flushleft}}
+
+\makepagestyle{exam} %Make standard pagestyle
+\makeatletter                 %Define standard pagestyle
+\makeevenfoot{exam}{}{\thepage\ of \thelastpage}{}
+\makeoddfoot{exam}{}{\thepage\ of \thelastpage}{}
+\makeevenhead{exam}{Exam, \examdate}{}{}
+\makeoddhead{exam}{Exam, \examdate}{}{}
+%\makeheadrule{tandard}{\textwidth}{\normalrulethickness}
+\makeatother 
+\pagestyle{exam}
+
+\newcommand{\points}[1]{\textit{#1 point(s)}.}
+\newenvironment{instructions}{\itshape}{}
+\newcommand{\email}[1]{\texttt{\href{mailto:#1}{#1}}}
+\newcommand{\RLang}{\textsf{R}}
+
+\DeclareMathOperator{\cov}{Cov}
+\DeclareMathOperator{\cor}{Cor}
+\DeclareMathOperator{\var}{Var}
+\DeclareMathOperator{\sd}{sd}
+\DeclareMathOperator{\se}{se}
+
+\begin{document}
+
+\begin{titlingpage}
+\maketitle{}
+
+\begin{itemize}
+\item You will have 1 hour 15 minutes to complete this exam. 
+\item No notes, cellphones, calculators, laptops, or access to the internet are allowed.
+\item Use the scantron sheet and a \#2 pencil to answer these questions.
+\item \textbf{IMPORTANT}: On the scantron, fill in these sections
+  \begin{itemize}
+  \item Last Name, First Name (using as many letters as are available).
+  \item ID Number
+  \item Form or Version: Fill in bubble \textbf{\Sexpr{VERSION}}.
+  \end{itemize}
+\item All figures referenced in questions are in a section at the end of the exam.
+\item When turning in the exam, place the scantron after the first page of the exam and return both.
+\end{itemize}
+
+\vspace{24pt}
+
+\begin{description}[itemsep=5pt]
+\item[Student Name] \underline{\hspace{7cm}}
+\item[Student ID] \underline{\hspace{7cm}} 
+\end{description}
+
+\end{titlingpage}
+
+\begin{titlingpage}
+\maketitle{}
+
+\begin{itemize}
+\item You will have {\Large 2 hours 30 minutes} to complete this exam. 
+\item No notes, cellphones, calculators, laptops, or access to the internet are allowed.
+\item Use the scantron sheet and a \#2 pencil to answer the multiple choice questions.
+\item \textbf{IMPORTANT}: On the scantron, fill in these sections
+  \begin{itemize}
+  \item Last Name, First Name (using as many letters as are available).
+  \item ID Number
+  \item Form or Version: Fill in bubble \textbf{\Sexpr{VERSION}}.
+  \end{itemize}
+\item All figures referenced in questions are in a section at the end of the exam.
+\item Answer the short answer questions in blue or black ink in the space provided.
+\item When turning in the exam, place the scantron after the first page of the exam and return both.
+\end{itemize}
+
+\vspace{24pt}
+
+\begin{description}[itemsep=5pt]
+\item[Student Name] \underline{\hspace{7cm}}
+\item[Student ID] \underline{\hspace{7cm}} 
+\end{description}
+
+\vspace{20em}
+
+{\scriptsize 
+  \begin{tabular}{l@{\hspace{1em}=\hspace{1em}}l}
+    \texttt{VERSION} &  \Sexpr{as.character(VERSION)} \\
+    \texttt{SEED} & \Sexpr{as.character(SEED)} \\
+    \texttt{IS\_SOLUTION} & \Sexpr{as.character(IS_SOLUTION)}
+  \end{tabular}
+}
+
+\end{titlingpage}
+
+<<results='asis'>>=
+if (! IS_SOLUTION) cat("\\newpage Intentionally left blank \\newpage \n")
+@ 
+
+\section*{Multiple Choice}
+
+\par
+<<results='asis'>>=
+cat(format(mcq, shuffle_answers = TRUE, show_solutions = IS_SOLUTION))
+@ 
+
+\clearpage{}
+\newpage{}
+\section*{Figures}
+
+<<gamma,fig.cap="Density plot of a distribution",fig.height=2>>=
+plot_gamma <- function() {
+    x <- seq(0, 20, by=0.1)
+    (ggplot(data.frame(x = x, y = dgamma(x, 2, 1/2)),
+            aes(x = -x, y = y))
+     + geom_line()
+     + scale_y_continuous("density")
+     + scale_x_continuous("")
+     + theme_bw())
+}
+
+plot_gamma()
+@
+
+<<bimodal,fig.cap="Density plot of a distribution",fig.height=2>>=
+plot_bimodal <- function() {
+    x <- c(rnorm(200, -2, 1), rnorm(200, 2, 1))
+    (ggplot(data.frame(x = x), aes(x=x))
+     + geom_density()
+     + theme_bw()
+     + scale_x_continuous(""))
+}
+plot_bimodal()
+@
+
+<<boxplot,fig.cap="A boxplot.",fig.height=1.5>>=
+plot_boxplot <- function() {
+    (ggplot()
+     + annotate("boxplot", lower=-1, upper=2, middle=1, x = "", ymax = 3, ymin = -2)
+     + annotate("point", x = "", y = 4)
+     + annotate("point", x = "", y = -3)
+     + coord_flip()
+     + theme_bw()
+     + scale_y_continuous("", breaks=-3:4)
+     + scale_x_discrete(""))
+}
+plot_boxplot()
+@
+
+<<validity_reliability,fig.cap="Plots of measurements from four methods compared with the true value, represented by a + at the center of the bullseye",warning=FALSE,message=FALSE,fig.height=5,fig.width=5>>=
+plot_validity_reliability <- function() {
+    param <- data.frame(reliability =
+                        ordered(c("low", "low", "high", "high"), levels = c("high", "low")),
+                        validity = ordered(c("low", "high", "low", "high"), levels = c("low", "high")),
+                        i = c(2, 3, 1, 4),
+                        sigma = I(list(diag(2) * 2, diag(2) * 2, diag(2) * 0.25, diag(2) * 0.25)),
+                        mu = I(list(c(-2, -2), c(0, 0), c(-2, -2), c(0, 0))))
+    
+    param <- mutate(param,
+                    category = sprintf("%s/%s", reliability, validity))
+    
+    
+    measures <- mdply(param,
+                      function(mu, sigma, ...) {
+                          ret <- rmvnorm(100, mu[[1]], sigma[[1]])
+                          colnames(ret) <- c("x", "y")
+                          ret
+                      })
+    
+    circles <- ldply(c(0.5, 1, 1.5, 2), 
+                     function(radius) {
+                         angle <- seq(-base::pi, base::pi, length = 100)
+                         data.frame(radius = radius,
+                                    angle = angle,
+                                    x = radius * sin(angle),
+                                    y = radius * cos(angle))
+                     })
+    
+    
+    gg <- (ggplot(measures, aes(x = x, y = y))
+           + geom_path(data = circles, aes(x = x, y = y, group = radius),
+                       colour = "gray", size = rel(0.5),
+                       alpha = 0.6)
+           + geom_point(color = "gray60")
+           + geom_point(data = data.frame(x = 0, y = 0),
+                        mapping = aes(x = x, y = y), shape = "+",
+                        size = rel(3))
+           + facet_wrap( ~ i , nrow = 2)
+           + scale_y_continuous("", limits = c(-4, 4))
+           + scale_x_continuous("", limits = c(-4, 4))
+           + theme_bw()
+           + theme(panel.grid = element_blank(),
+                   axis.ticks = element_blank(),
+                   axis.text = element_blank()))
+    gg
+}
+plot_validity_reliability()
+@ 
+
+\end{document}
+
+
+%%  LocalWords:  Agresti 2cm 5cm varnode contestation boxplot
+%%  LocalWords:  causalnode emphline
