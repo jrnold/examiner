@@ -5,10 +5,11 @@
 \title{Introduction to the \textbf{examiner} Package}
 \author{Jeffrey B. Arnold}
 
+\newcommand{\varlistfont}[1]{\ttfamily #1:}
 \newcommand{\RLang}{\textsf{R}}
 \usepackage{enumitem}
 \newlist{varlist}{description}{1}
-\setlist[varlist]{font=\ttfamily, noitemsep, leftmargin=*, labelindent=16pt}
+\setlist[varlist]{font=\varlistfont, noitemsep, leftmargin=1cm}
 
 \usepackage{hyperref}
 
@@ -113,11 +114,11 @@ This can be placed in a knitr chunk with option \texttt{results='asis'} in order
 \label{sec:format-templates}
 
 \newcommand{\examinerNOne}{\item[N1] Problem number (top level \texttt{problem} or \texttt{problemblock} objects).}
-\newcommand{\examinerNOneA}{\item[N1a] Output of \texttt{examiner\_opts\$format\_N1(N1)}}.
+\newcommand{\examinerNOneA}{\item[N1a] Output of \texttt{format\_N1(N1)}}.
 \newcommand{\examinerNTwo}{\item[N2] \texttt{NULL} if not in a \texttt{problemblock} object. If in a \texttt{problemblock} object, the problem number with that block.}
-\newcommand{\examinerNTwoA}{\item[N2a] Output of \texttt{examiner\_opts\$format\_N2(N2)}.}
+\newcommand{\examinerNTwoA}{\item[N2a] Output of \texttt{format\_N2(N2)}.}
 \newcommand{\examinerNZero}{\item[N0] Problem number, all problems, including those within \texttt{problemblock} objects.}
-\newcommand{\examinerNZeroA}{\item[N0a] Output of \texttt{examiner\_opts\$format\_N0(N0)}}
+\newcommand{\examinerNZeroA}{\item[N0a] Output of \texttt{format\_N0(N0)}}
 \newcommand{\examinerShowSolutions}{\item[show\_solutions] \texttt{logical}. Whether to show solutions.}
 
 The formatting of problemsets is controlled by the \texttt{format} methods for the classes defined in this package: \texttt{problemset}, \texttt{problemblock}, \texttt{problem}, and \texttt{answerlist}.
@@ -187,7 +188,20 @@ The data which is passed to \texttt{tpl\_answerlist} is a list with these elemen
 \examinerNTwo{}
 \examinerNTwoA{}
 \examinerShowSolutions{}
+\item[...] other arguments passed to \texttt{format}
 \end{varlist}
+
+\newcommand{\examinerNOneAA}{N1 & Problem number (top level \texttt{problem} or \texttt{problemblock} objects).}
+\newcommand{\examinerNOneAAA}{N2 & Output of \texttt{examiner\_opts\$format\_N1(N1)}}.
+\newcommand{\examinerNTwoAA}{N2A & \texttt{NULL} if not in a \texttt{problemblock} object. If in a \texttt{problemblock} object, the problem number with that block.}
+
+\begin{center}
+  \begin{tabular}{p{1cm}p{6cm}}
+    \examinerNOneAA \\
+    \examinerNOneAAA \\
+    \examinerNTwoAA
+  \end{tabular}
+\end{center}
 
 \subsection{problem}
 
@@ -197,7 +211,7 @@ cat(examiner_opts$tpl_problem)
 @ 
 The data which is passed to template is the  \texttt{problem} object converted into a list with the following additions and changes:
 \begin{varlist}
-\item[answers] \texttt{character}. Output of calling \texttt{format} on the \texttt{answers} element.
+\item[answers] Output from calling \texttt{format} on the \texttt{answers} element.
 \examinerNZero{}
 \examinerNZeroA{}
 \examinerNOne{}
@@ -205,7 +219,10 @@ The data which is passed to template is the  \texttt{problem} object converted i
 \examinerNTwo{}
 \examinerNTwoA{}
 \examinerShowSolutions{}
+\item[...] other arguments passed to \texttt{format}
 \end{varlist}
+
+
 
 \subsection{problemblock}
 
@@ -215,10 +232,11 @@ cat(examiner_opts$tpl_problemblock)
 @ 
 The data which is passed to the template is the  \texttt{problemblock} object converted into a list with the following additions and changes:
 \begin{varlist}
-\item[answers] \texttt{character}. Output of calling \texttt{format} on the \texttt{problems} element.
+\item[answers] Output from calling \texttt{format} on the \texttt{problems} element.
 \examinerNZero{}
 \examinerNZeroA{}
 \item Other elements in the \texttt{problemblock} object.
+\item[...] other arguments passed to \texttt{format}
 \end{varlist}
 
 \subsection{problemset}
@@ -230,7 +248,7 @@ cat(examiner_opts$tpl_problembset)
 The data which is passed to template is the  \texttt{problemset} object converted into a list with the following additions and changes:
 \begin{varlist}
 \item[problems] A \texttt{character} vector created by calling \texttt{format} on each element in \texttt{problems}.
-\item Other elements in the \texttt{problemblock} object.
+\item[...] other arguments passed to \texttt{format}
 \end{varlist}
 
 \section{Example}
