@@ -49,7 +49,7 @@ library("examiner")
 ```
 
 ```
-## Loading required package: methods
+Loading required package: methods
 ```
 
 ```r
@@ -58,66 +58,68 @@ cat(format(problems))
 ```
 
 ```
-## \begin{problemset}
-## \begin{problemsetpretext}
-## Who would cross the Bridge of Death must answer me these 
-## questions three, 'ere the other side he see.
-## 
-## \end{problemsetpretext}
-## \begin{problems}
-## \noindent \begin{minipage}{\textwidth}
-## \noindent
-## \begin{problem}
-## \begin{problemtext}
-## What is your name?
-## \end{problemtext}
-## \begin{answers}
-## \item   Sir Launcelot of Camelot 
-## \item   Arthur, King of the Britons 
-## \item   Sir Robin of Camelot 
-## \item   Sir Bedevere 
-## \item   Sir Galahad of Camelot 
-## \end{answers}
-## \end{problem}
-## \end{minipage}
-## \noindent \begin{minipage}{\textwidth}
-## \noindent
-## \begin{problem}
-## \begin{problemtext}
-## What is your quest?
-## \end{problemtext}
-## \begin{answers}
-## \item   To seek the Holy Grail 
-## \item   To kill ferocious bunnies 
-## \item   To invent silly walks 
-## \item   To find the meaning of life 
-## \end{answers}
-## \end{problem}
-## \end{minipage}
-## \noindent \begin{minipage}{\textwidth}
-## \noindent
-## \begin{problem}
-## \begin{problemtext}
-## What is the airspeed of an unladen swallow?
-## \end{problemtext}
-## \begin{answers}
-## \item   25 mph 
-## \item   20 mph 
-## \item   30 mph 
-## \item   40 mph 
-## \item   African or European? 
-## \end{answers}
-## \end{problem}
-## \end{minipage}
-## \end{problems}
-## \begin{problemsetposttext}
-## Arrrrrrrrrrrrrgh!
-## \end{problemsetposttext}
-## \end{problemset}
+\begin{problemset}
+\begin{problemsetpretext}
+Who would cross the Bridge of Death must answer me these 
+questions three, 'ere the other side he see.
+
+\end{problemsetpretext}
+\begin{problems}
+\noindent \begin{minipage}{\textwidth}
+\noindent
+\begin{problem}
+\begin{problemtext}
+What is your name?
+\end{problemtext}
+\begin{answers}
+\item   Sir Launcelot of Camelot 
+\item   Arthur, King of the Britons 
+\item   Sir Robin of Camelot 
+\item   Sir Bedevere 
+\item   Sir Galahad of Camelot 
+\end{answers}
+\end{problem}
+\end{minipage}
+\noindent \begin{minipage}{\textwidth}
+\noindent
+\begin{problem}
+\begin{problemtext}
+What is your quest?
+\end{problemtext}
+\begin{answers}
+\item   To seek the Holy Grail 
+\item   To kill ferocious bunnies 
+\item   To invent silly walks 
+\item   To find the meaning of life 
+\end{answers}
+\end{problem}
+\end{minipage}
+\noindent \begin{minipage}{\textwidth}
+\noindent
+\begin{problem}
+\begin{problemtext}
+What is the airspeed of an unladen swallow?
+\end{problemtext}
+\begin{answers}
+\item   25 mph 
+\item   20 mph 
+\item   30 mph 
+\item   40 mph 
+\item   African or European? 
+\end{answers}
+\end{problem}
+\end{minipage}
+\end{problems}
+\begin{problemsetposttext}
+Arrrrrrrrrrrrrgh!
+\end{problemsetposttext}
+\end{problemset}
 ```
 
+
 There are options to shuffle problems, and answers, and to show the solutions.
-See the package vignette for more examples.
+The appearance can be customized by redefining the LaTeX environments.
+See the package vignettes for more examples.
 
 **examiner** uses templates to format the questions, which allows flexibility in the formatting.
 For example, to produce markdown,
@@ -133,132 +135,42 @@ tpl_problemset <- str_c("{{{pretext}}}\n", "{{#problems}}", "{{{.}}}", "{{/probl
 tpl_problemblock <- str_c("{{{pretext}}}\n", "{{#problems}}", "{{{.}}}", "{{/problems}}", 
     "{{{posttext}}}\n", sep = "\n")
 
-problems <- problemset_from_yaml(system.file("yaml/questions2.yaml", package = "examiner"))
+problems <- problemset_from_yaml(system.file("yaml/questions.yaml", package = "examiner"))
 cat(format(problems, tpl_answerlist = tpl_answerlist, tpl_problemset = tpl_problemset, 
     tpl_problemblock = tpl_problemblock, tpl_problem = tpl_problem))
 ```
 
-```
-## Who would cross the Bridge of Death must answer me these
-## questions three, 'ere the other side he see.
-## 
-## 
-## What is your name?
-## 
-## 
-## 1. Sir Launcelot of Camelot
-## 1. Arthur, King of the Britons
-## 1. Sir Robin of Camelot
-## 1. Sir Bedevere
-## 1. Sir Galahad of Camelot
-## 
-## What is your quest?
-## 
-## 
-## 1. To seek the Holy Grail
-## 1. To kill ferocious bunnies
-## 1. To invent silly walks
-## 1. To find the meaning of life
-## 1. I have no quest
-## 
-## What is your favorite color?
-## 
-## 
-## 1. blue
-## 1. green
-## 1. red
-## 1. yellow
-## 1. purple
-## 
-## Answer these questions Sir Robin of Camelot.
-## 
-## What is your name?
-## 
-## 
-## 1. Sir Launcelot of Camelot
-## 1. Arthur, King of the Britons
-## 1. Patsy
-## 1. Sir Robin of Camelot
-## 1. Sir Bedevere
-## 1. Sir Galahad of Camelot
-## 
-## What is your quest?
-## 
-## 
-## 1. To seek the Holy Grail
-## 1. To kill ferocious bunnies
-## 1. To invent silly walks
-## 1. To find the meaning of life
-## 
-## What is the capital of Assyria?
-## 
-## 
-## 1. Ninevah
-## 1. Jerusalem
-## 1. Paris
-## 1. Damascus
-## 1. I don't know that!
-## 
-## 
-## 
-## Answer these questions, Sir Galahad of Camelot
-## 
-## What is your name?
-## 
-## 
-## 1. Sir Launcelot of Camelot
-## 1. Arthur, King of the Britons
-## 1. Sir Robin of Camelot
-## 1. Sir Bedevere
-## 1. Sir Galahad of Camelot
-## 
-## What is your quest?
-## 
-## 
-## 1. To seek the Holy Grail
-## 1. To kill ferocious bunnies
-## 1. To invent silly walks
-## 1. To find the meaning of life
-## 
-## What your favorite color?
-## 
-## 
-## 1. blue
-## 1. green
-## 1. red
-## 1. yellow
-## 1. purple
-## 
-## 
-## 
-## Answer these questions, Arthur, King of the Britons
-## 
-## What is your name?
-## 
-## 
-## 1. Sir Launcelot of Camelot
-## 1. Arthur, King of the Britons
-## 1. Sir Robin of Camelot
-## 1. Sir Bedevere
-## 1. Sir Galahad of Camelot
-## 
-## What is your quest?
-## 
-## 
-## 1. To seek the Holy Grail
-## 1. To kill ferocious bunnies
-## 1. To invent silly walks
-## 1. To find the meaning of life
-## 
-## What is the airspeed of an unladen swallow?
-## 
-## 
-## 1. 25 mph
-## 1. 20 mph
-## 1. 30 mph
-## 1. 40 mph
-## 1. African or European?
-```
+Who would cross the Bridge of Death must answer me these 
+questions three, 'ere the other side he see.
+
+
+What is your name?
+
+
+1. Sir Launcelot of Camelot
+1. Arthur, King of the Britons
+1. Sir Robin of Camelot
+1. Sir Bedevere
+1. Sir Galahad of Camelot
+
+What is your quest?
+
+
+1. To seek the Holy Grail
+1. To kill ferocious bunnies
+1. To invent silly walks
+1. To find the meaning of life
+
+What is the airspeed of an unladen swallow?
+
+
+1. 25 mph
+1. 20 mph
+1. 30 mph
+1. 40 mph
+1. African or European?
+
+Arrrrrrrrrrrrrgh!
 
 
 

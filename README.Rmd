@@ -17,19 +17,21 @@ cat(paste0(readLines(system.file("yaml/questions.yaml",
 
 Problems can then be loaded and formatted into LaTeX code.
 This is intended to be used with knitr or Sweave.
-```{r}
+```{r comment=""}
 library("examiner")
 problems <- 
     problemset_from_yaml(system.file("yaml/questions.yaml", 
                                      package = "examiner"))
 cat(format(problems))
 ```
+
 There are options to shuffle problems, and answers, and to show the solutions.
-See the package vignette for more examples.
+The appearance can be customized by redefining the LaTeX environments.
+See the package vignettes for more examples.
 
 **examiner** uses templates to format the questions, which allows flexibility in the formatting.
 For example, to produce markdown,
-```{r, echo = TRUE}
+```{r, echo = TRUE, results='asis'}
 tpl_problem <-
     str_c("{{{text}}}", "\n",
           "{{{answers}}}", 
@@ -58,7 +60,7 @@ tpl_problemblock <-
           sep = "\n")
 
 problems <- 
-    problemset_from_yaml(system.file("yaml/questions2.yaml", 
+    problemset_from_yaml(system.file("yaml/questions.yaml", 
                                      package = "examiner"))
 cat(format(problems,
 	tpl_answerlist = tpl_answerlist,
