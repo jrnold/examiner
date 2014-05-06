@@ -8,7 +8,7 @@ This package is still **alpha**.
 It came out of code I used to write multiple-choice exams for a course I was teaching.
 It could change at any time, but I thought it may be useful to others, so I packaged it and put it here.
 
-# Usage
+## Usage
 
 Questions are written and stored in a yaml file,
 
@@ -178,7 +178,7 @@ Arrrrrrrrrrrrrgh!
 
 
 
-# Comparison to Alternatives
+## Comparison to Alternatives
 
 The package [exams](http://cran.r-project.org/web/packages/exams/index.html) is a more mature and full featured package that uses R to generate exams.
 **exams** handles more question types and also allows output into HTML.
