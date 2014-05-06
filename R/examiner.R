@@ -10,6 +10,7 @@
 #' @import whisker
 #' @import plyr
 #' @import methods
+#' @export Counter
 NULL
 
 beginenv <- function(x) str_c("\\begin{", x, "}")
@@ -22,23 +23,43 @@ shuffle <- function(x) {
     x[sample(seq_along(x), length(x), replace = FALSE)]
 }
 
+#' Counter class
+#'
+#' @examples
+#' cnt <- Counter()
+#' show(cnt)
+#' cnt$add()
+#' show(cnt)
+#' cnt$add()
+#' cnt$add()
+#' show(cnt)
+#' cnt$subtract()
+#' show(cnt)
+#' cnt$add(5)
+#' show(cnt)
+#' cnt$reset()
+#' show(cnt)
+#' @export
 Counter <-
     setRefClass("Counter",
                 fields = list(i = "integer"),
                 methods = list(
-                add = function(x = 1L) {
-                    i <<- i + as.integer(x)
-                },
-                subtract = function(x = 1L) {
-                    i <<- i - as.integer(x)
-                },
-                reset = function(x = 0L) {
-                    i <<- x
-                },
-                initialize = function(i = 0L) {
-                    i <<- as.integer(i)
-                }
-                ))
+                    add = function(x = 1L) {
+                        i <<- i + as.integer(x)
+                    },
+                    subtract = function(x = 1L) {
+                        i <<- i - as.integer(x)
+                    },
+                    reset = function(x = 0L) {
+                        i <<- x
+                    },
+                    initialize = function(i = 0L) {
+                        i <<- as.integer(i)
+                    },
+                    show = function() {
+                        cat(sprintf("Counter: %d\n", i))
+                    }
+                    ))
 
 #' Examiner Options
 #'
@@ -140,9 +161,17 @@ examiner_latex_header <- function() {
 }
 
 
-#' Create an answerlist object
+#' Create an \code{answerlist} object
+#'
+#' @details
+#' The class \code{"answerlist"} is a \code{"data.frame"} with columns:
+#' \tabular{lll}{
+#' text \tab character \tab Answer text \cr
+#' corect \tab logical \tab Is the answer correct? \cr
+#' fixed \tab logical \tab Can the answer be shuffled
+#' }
 #' 
-#' @param x A data frame with colums: text, correct, and fixed.
+#' @param x A data frame with colums: text, correct, and fixed. In \code{format}, the object.
 #' @return An object of class \code{answerlist}.
 #' @export
 answerlist <- function(x) {
@@ -152,11 +181,19 @@ answerlist <- function(x) {
 }
 
 #' @export
-format.answerlist <- function(x, show_solutions = FALSE, .debug = FALSE,
+#' @param show_solutions Whether to the show the solution
+#' @param tpl_answerlist The template to use to render the object.
+#' @param format_i A function used to format the answer number.
+#' @param .debug Show the data used in the template.
+#' @param ... Passed to the template.
+#' @rdname answerlist
+format.answerlist <- function(x, show_solutions = FALSE, 
                               tpl_answerlist = examiner_opts$tpl_answerlist,
-                              format_answer_counter = identity,
+                              format_i = identity,
+                              .debug = FALSE,
                               ...) {
-    x$ia <- format_answer_counter(x$i)
+    x$i <- seq_len(nrow(x))
+    x$i_fmt <- format_i(x$i)
     data <- c(list(answers = unname(rowSplit(x)),
                    show_solutions = show_solutions),
                    list(...))
@@ -169,12 +206,20 @@ shuffle_answers <- function(x) {
     indices <- seq_len(nrow(x))[!x[["fixed"]]]
     iorder <- sample(indices, length(indices))
     x[indices, ] <- x[iorder, , drop = FALSE]
-    x[ , "i"] <- seq_len(nrow(x))
     attr(x, "order") <- iorder
     x
 }
 
-#' Create a problem object
+#' Create a \code{problem} object
+#'
+#' @details
+#' The class \code{"problem"} is a \code{"list"} with elements,
+#' \describe{
+#' \item{\code{text}}{\code{"character"}. The text for the problem.}
+#' \item{\code{answers}}{\code{"answerlist"}. Possible answers to the problem.}
+#' \item{\code{solution}}{\code{"character"}. Text with discussion of the answer to problem.}
+#' \item{\code{randomizable}}{\code{"logical"}. Whether the answers can be shuffled.}
+#' }
 #'
 #' @param text \code{character} vector with the prompt for the problem.
 #' @param answers A \code{list} of \code{problem} or \code{problemset} objects.
@@ -201,14 +246,10 @@ problem <- function(text = "",
         answerlist(data.frame(text = sapply(answers, as.character), # used to convert heterog type list to character vector
                               correct = seq_along(answers) == correct,
                               fixed = seq_along(answers) %in% c(firsti, lasti),
-                              i = seq_along(answers),
                               stringsAsFactors = FALSE))
     .Data <-
         list(text = text,
              answers = answers,
-             correct = correct,
-             first = first,
-             last = last,
              solution = as.character(solution),
              randomizable = as.logical(randomizable)[1])
     class(.Data) <- c("problem", "list")
@@ -216,43 +257,69 @@ problem <- function(text = "",
 }
 
 #' @export
+#' @param x The object
+#' @param shuffle_answers Shuffle answers?
+#' @param show_solutions Display the solutions to the answers?
+#' @param tpl_problem Whisker template to use when rendering the object.
+#' @param counter A counter to keep track of the number of problems.
+#' @param cnt_problem_1 A counter for the top level \code{problem} and \code{problemset} objects.
+#' @param cnt_problem_2 \code{NULL} if the problem is not in a \code{problemblock}. Otherwise, the number within that \code{problemblock}.
+#' @param format_cnt_problem_0 A function used to format \code{cnt_problem_0}.
+#' @param format_cnt_problem_1 A function used to format \code{cnt_problem_1}.
+#' @param format_cnt_problem_2 A function used to format \code{cnt_problem_2}.
+#' @param .debug Useful for debugging. Shows the data that is passed to the template.
+#' @param ... Used by the template and passed to \code{format.answerlist}.
+#' @rdname problem
 format.problem <- function(x,
                            shuffle_answers = FALSE,
                            show_solutions = FALSE,
                            tpl_problem = examiner_opts$tpl_problem,
                            counter = Counter(),
-                           N2 = NULL,
-                           N1 = 1L,
-                           format_N1 = identity,
-                           format_N2 = identity,
-                           format_N0 = identity,                           
+                           cnt_problem_2 = NULL,
+                           cnt_problem_1 = 1L,
+                           format_cnt_problem_1 = identity,
+                           format_cnt_problem_2 = identity,
+                           format_cnt_problem_0 = identity,
                            .debug = FALSE, ...) {
     x <- as.list(x)
     if (x[["randomizable"]] && as.logical(shuffle_answers)) {
         x[["answers"]] <- shuffle_answers(x[["answers"]])
     }
     counter$add()
-    N0 <- counter$i
-    N1a <- format_N1(N1)
-    N2a <- format_N2(N2)
-    N0a <- format_N0(N0)
+    cnt_problem_0 <- counter$i
+    cnt_problem_0_fmt <- format_cnt_problem_0(cnt_problem_0)
+    cnt_problem_1_fmt <- format_cnt_problem_1(cnt_problem_1)
+    cnt_problem_2_fmt <- format_cnt_problem_2(cnt_problem_2)
     x[["answers"]] <-
         format(x[["answers"]], show_solutions = show_solutions,
-               N2 = N2, N1 = N1, N0 = N0, N1a = N1a, N2a = N2a, N0a = N0a, ...)
+               cnt_problem_2 = cnt_problem_2,
+               cnt_problem_1 = cnt_problem_1,
+               cnt_problem_0 = cnt_problem_0,
+               cnt_problem_1_fmt = cnt_problem_1_fmt,
+               cnt_problem_2_fmt = cnt_problem_2_fmt,
+               cnt_problem_0_fmt = cnt_problem_0_fmt, ...)
     data <- x
     data[["show_solutions"]] <- show_solutions
-    data[["N1"]] <- N1
-    data[["N2"]] <- N2
-    data[["N0"]] <- N0
-    data[["N1a"]] <- N1a
-    data[["N2a"]] <- N2a
-    data[["N0a"]] <- N0a
+    data[["cnt_problem_1"]] <- cnt_problem_1
+    data[["cnt_problem_2"]] <- cnt_problem_2
+    data[["cnt_problem_0"]] <- cnt_problem_0
+    data[["cnt_problem_1_fmt"]] <- cnt_problem_1_fmt
+    data[["cnt_problem_2_fmt"]] <- cnt_problem_2_fmt
+    data[["cnt_problem_0_fmt"]] <- cnt_problem_0_fmt
     data <- c(data, list(...))
     whisker.render(tpl_problem, data = data)
 }
 
-#' Create a problemblock object
+#' \code{problemblock} object
 #'
+#' @details
+#' A \code{"problemblock"} object is a \code{"list"} with elements
+#' \describe{
+#' \item{\code{problems}}{The problems. A \code{"list"} of \code{"problem"} objects.}
+#' \item{\code{pretext}}{The text to go before the problems.}
+#' \item{\code{posttext}}{The text to go after the problems.}
+#' }
+#' 
 #' @param problems list of problems
 #' @param pretext \code{character} vector with text to go before the problems.
 #' @param posttext \code{character} vector with text to go after the problems.
@@ -271,14 +338,26 @@ problemblock <- function(problems, pretext = "", posttext = "", randomizable = F
 }
 
 #' @export
+#' @param x The object
+#' @param shuffle_problems Shuffle problems?
+#' @param shuffle_answers Shuffle answers?
+#' @param show_solutions Display the solutions to the answers?
+#' @param tpl_problemblock Whisker template to use when rendering the object.
+#' @param format_cnt_problem_1 A function used to format 
+#' @param cnt_problem_1 Problem number. This will usually be set by \code{format.problem}.
+#' @param counter Counter object used for keeping track of the total number of problems in a problemset.
+#' Usually used internally by \code{format.problem}.
+#' @param .debug Useful for debugging. Shows the data that is passed to the template.
+#' @param ... Used by the template and passed to \code{format.problem} for each problem.
+#' @rdname problemblock
 format.problemblock <- function(x,
                                 shuffle_problems = FALSE,
                                 shuffle_answers = FALSE,
                                 show_solutions = FALSE,
-                                N1 = 1L,
-                                counter = Counter(),
                                 tpl_problemblock = examiner_opts$tpl_problemblock,
-                                format_N1 = identity,
+                                format_cnt_problem_1 = identity,
+                                cnt_problem_1 = 1L,
+                                counter = Counter(),
                                 .debug = FALSE,
                                 ...) {
     data <- as.list(x)
@@ -293,22 +372,31 @@ format.problemblock <- function(x,
             format(problems[[i]],
                    show_solutions = show_solutions,
                    shuffle_answers = shuffle_answers,
-                   N1 = N1,
-                   N2 = i,
+                   cnt_problem_1 = cnt_problem_1,
+                   cnt_problem_2 = i,
                    counter = counter,
                    ...)
     }
     data[["problems"]] <- problems
-    data[["N1"]] <- N1
-    data[["N1a"]] <- format_N1(N1)
+    data[["cnt_problem_1"]] <- cnt_problem_1
+    data[["cnt_problem_1_fmt"]] <- format_cnt_problem_1(cnt_problem_1)
     data <- c(data, list(...))
     if (.debug) print(data)
     whisker.render(tpl_problemblock, data = data)
 }
 
 
-#' Create a problemset object
+#' \code{problemset} object
 #'
+#' @details
+#' A \code{"problemset"} object is a \code{"list"} with elements
+#' \describe{
+#' \item{\code{problems}}{The problems. A \code{"list"} of \code{"problem"} objects.}
+#' \item{\code{pretext}}{The text to go before the problems.}
+#' \item{\code{posttext}}{The text to go after the problems.}
+#' }
+#' 
+#' 
 #' @param problems list of problems
 #' @param pretext \code{character} vector with text to go before the problems.
 #' @param posttext \code{character} vector with text to go after the problems.
@@ -328,10 +416,21 @@ problemset <- function(problems, pretext = "", posttext = "") {
     .Data
 }
 
+#' @rdname problemset
+#'
+#' @export
+#' @param x The object.
+#' @param shuffle_problems Shuffle problems?
+#' @param shuffle_answers Shuffle answers?
+#' @param show_solutions Display the solutions to the answers?
+#' @param tpl_problemset Whisker template to use when rendering the object.
+#' @param .debug Useful for debugging. Shows the data that is passed to the template.
+#' @param ... Used by the template and passed to \code{format.problem} and \code{format.problemblock}.
 #' @export
 format.problemset <- function(x, shuffle_problems = FALSE, shuffle_answers = FALSE,
-                              show_solutions = FALSE, .debug = FALSE,
+                              show_solutions = FALSE,
                               tpl_problemset = examiner_opts$tpl_problemset,
+                              .debug = FALSE,
                               ...) {
     data <- as.list(x)
     problems <- data[["problems"]]
@@ -343,7 +442,7 @@ format.problemset <- function(x, shuffle_problems = FALSE, shuffle_answers = FAL
         problems[[i]] <- format(problems[[i]],
                                 show_solutions = show_solutions,
                                 shuffle_answers = shuffle_answers,
-                                N1 = i,
+                                cnt_problem_1 = i,
                                 counter = counter,
                                 ...)
     }

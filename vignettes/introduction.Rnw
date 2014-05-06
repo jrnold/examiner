@@ -113,12 +113,12 @@ This can be placed in a knitr chunk with option \texttt{results='asis'} in order
 \section{Format and Templates}
 \label{sec:format-templates}
 
-\newcommand{\examinerNOne}{\item[N1] Problem number (top level \texttt{problem} or \texttt{problemblock} objects).}
-\newcommand{\examinerNOneA}{\item[N1a] Output of \texttt{format\_N1(N1)}}.
-\newcommand{\examinerNTwo}{\item[N2] \texttt{NULL} if not in a \texttt{problemblock} object. If in a \texttt{problemblock} object, the problem number with that block.}
-\newcommand{\examinerNTwoA}{\item[N2a] Output of \texttt{format\_N2(N2)}.}
-\newcommand{\examinerNZero}{\item[N0] Problem number, all problems, including those within \texttt{problemblock} objects.}
-\newcommand{\examinerNZeroA}{\item[N0a] Output of \texttt{format\_N0(N0)}}
+\newcommand{\examinerNZero}{\item[cnt\_problem\_0] Problem number, all problems, including those within \texttt{problemblock} objects.}
+\newcommand{\examinerNZeroA}{\item[cnt\_problem\_0\_fmt] Output of \texttt{format\_cnt\_problem\_0(cnt\_problem\_0)}.}
+\newcommand{\examinerNOne}{\item[cnt\_problem\_1] Problem number (top level \texttt{problem} or \texttt{problemblock} objects).}
+\newcommand{\examinerNOneA}{\item[cnt\_problem\_1\_fmt] Output of \texttt{format\_cnt\_problem\_1(cnt\_problem\_1)}.}
+\newcommand{\examinerNTwo}{\item[cnt\_problem\_2] \texttt{NULL} if not in a \texttt{problemblock} object. If in a \texttt{problemblock} object, the problem number with that block.}
+\newcommand{\examinerNTwoA}{\item[cnt\_problem\_2\_fmt] Output of \texttt{format\_cnt\_problem\_2(cnt\_problem\_2)}.}
 \newcommand{\examinerShowSolutions}{\item[show\_solutions] \texttt{logical}. Whether to show solutions.}
 
 The formatting of problemsets is controlled by the \texttt{format} methods for the classes defined in this package: \texttt{problemset}, \texttt{problemblock}, \texttt{problem}, and \texttt{answerlist}.
@@ -180,7 +180,7 @@ cat(examiner_opts$tpl_answers)
 
 The data which is passed to \texttt{tpl\_answerlist} is a list with these elements:
 \begin{varlist}
-\item[answers] list of list objects generated from calling \texttt{rowSplit} on the \texttt{answerlist} object.
+\item[answers] list of list objects generated from calling \texttt{rowSplit} on the \texttt{answerlist} object. In addition to the columns in \texttt{answerlist}, there is the column \texttt{i\_fmt} which is \texttt{i} formatted with \texttt{format\_i}.
 \examinerNZero{}
 \examinerNZeroA{}
 \examinerNOne{}
@@ -188,20 +188,8 @@ The data which is passed to \texttt{tpl\_answerlist} is a list with these elemen
 \examinerNTwo{}
 \examinerNTwoA{}
 \examinerShowSolutions{}
-\item[...] other arguments passed to \texttt{format}
+\item[...] other arguments passed to \texttt{format}.
 \end{varlist}
-
-\newcommand{\examinerNOneAA}{N1 & Problem number (top level \texttt{problem} or \texttt{problemblock} objects).}
-\newcommand{\examinerNOneAAA}{N2 & Output of \texttt{examiner\_opts\$format\_N1(N1)}}.
-\newcommand{\examinerNTwoAA}{N2A & \texttt{NULL} if not in a \texttt{problemblock} object. If in a \texttt{problemblock} object, the problem number with that block.}
-
-\begin{center}
-  \begin{tabular}{p{1cm}p{6cm}}
-    \examinerNOneAA \\
-    \examinerNOneAAA \\
-    \examinerNTwoAA
-  \end{tabular}
-\end{center}
 
 \subsection{problem}
 
@@ -219,7 +207,7 @@ The data which is passed to template is the  \texttt{problem} object converted i
 \examinerNTwo{}
 \examinerNTwoA{}
 \examinerShowSolutions{}
-\item[...] other arguments passed to \texttt{format}
+\item[...] other arguments passed to \texttt{format}.
 \end{varlist}
 
 
@@ -236,19 +224,19 @@ The data which is passed to the template is the  \texttt{problemblock} object co
 \examinerNZero{}
 \examinerNZeroA{}
 \item Other elements in the \texttt{problemblock} object.
-\item[...] other arguments passed to \texttt{format}
+\item[...] other arguments passed to \texttt{format}.
 \end{varlist}
 
 \subsection{problemset}
 
-The default template used to format \texttt{problemset} objects is
+The default template used to format \texttt{problemset} objects is:
 <<>>=
 cat(examiner_opts$tpl_problembset)
 @ 
 The data which is passed to template is the  \texttt{problemset} object converted into a list with the following additions and changes:
 \begin{varlist}
 \item[problems] A \texttt{character} vector created by calling \texttt{format} on each element in \texttt{problems}.
-\item[...] other arguments passed to \texttt{format}
+\item[...] other arguments passed to \texttt{format}.
 \end{varlist}
 
 \section{Example}
