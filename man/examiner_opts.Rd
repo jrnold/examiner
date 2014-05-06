@@ -3,7 +3,7 @@
 \name{examiner_opts}
 \alias{examiner_opts}
 \title{Examiner Options}
-\format{\preformatted{<environment: 0x52dc208> 
+\format{\preformatted{<environment: 0x5b8a5d0> 
 }}
 \usage{
 examiner_opts

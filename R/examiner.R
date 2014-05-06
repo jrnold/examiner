@@ -10,7 +10,7 @@
 #' @import whisker
 #' @import plyr
 #' @import methods
-#' @export Counter
+#' @
 NULL
 
 beginenv <- function(x) str_c("\\begin{", x, "}")
@@ -39,6 +39,7 @@ shuffle <- function(x) {
 #' show(cnt)
 #' cnt$reset()
 #' show(cnt)
+#' @export Counter
 #' @export
 Counter <-
     setRefClass("Counter",
@@ -137,11 +138,11 @@ examiner_opts$latex_header <-
     c("\\usepackage{amsthm,amsmath,enumitem}",
       "\\theoremstyle{definition}\\newtheorem{problem}{Problem}",
       ltxnewenv("problemset", "", ""),
-      ltxnewenv("problemsetpretext", "\\par", ""),
-      ltxnewenv("problemsetposttext", "\\par", ""),
-      ltxnewenv("problems", "", ""),
-      ltxnewenv("problemtext", "", ""),
-      ltxnewenv("solution", "\\par \\color{blue}", ""),
+      ltxnewenv("problemsetpretext", "\\par\\newline", ""),
+      ltxnewenv("problemsetposttext", "\\par\\newline", ""),
+      ltxnewenv("problems", "\\par\\noindent", ""),
+      ltxnewenv("problemtext", "\\par\\noindent", ""),
+      ltxnewenv("solution", "\\color{blue}", ""),
       ltxnewenv("problemblock", "", ""),
       ltxnewenv("correctanswer", "\\color{blue} (*) ", ""),      
       ltxnewenv("wronganswer", "", ""),
@@ -355,6 +356,8 @@ format.problemblock <- function(x,
                                 shuffle_answers = FALSE,
                                 show_solutions = FALSE,
                                 tpl_problemblock = examiner_opts$tpl_problemblock,
+                                tpl_problem = examiner_opts$tpl_problem,
+                                tpl_answerlist = examiner_opts$tpl_answerlist,                                
                                 format_cnt_problem_1 = identity,
                                 cnt_problem_1 = 1L,
                                 counter = Counter(),
@@ -375,6 +378,8 @@ format.problemblock <- function(x,
                    cnt_problem_1 = cnt_problem_1,
                    cnt_problem_2 = i,
                    counter = counter,
+                   tpl_problem = tpl_problem,
+                   tpl_answerlist = tpl_answerlist,
                    ...)
     }
     data[["problems"]] <- problems
@@ -430,6 +435,9 @@ problemset <- function(problems, pretext = "", posttext = "") {
 format.problemset <- function(x, shuffle_problems = FALSE, shuffle_answers = FALSE,
                               show_solutions = FALSE,
                               tpl_problemset = examiner_opts$tpl_problemset,
+                              tpl_problemblock = examiner_opts$tpl_problemblock,                              
+                              tpl_problem = examiner_opts$tpl_problem,
+                              tpl_answerlist = examiner_opts$tpl_answerlist,
                               .debug = FALSE,
                               ...) {
     data <- as.list(x)
@@ -444,6 +452,9 @@ format.problemset <- function(x, shuffle_problems = FALSE, shuffle_answers = FAL
                                 shuffle_answers = shuffle_answers,
                                 cnt_problem_1 = i,
                                 counter = counter,
+                                tpl_problem = tpl_problem,
+                                tpl_problemblock = tpl_problemblock,
+                                tpl_answerlist = tpl_answerlist,
                                 ...)
     }
     data[["problems"]] <- problems
@@ -482,18 +493,45 @@ problemset_from_list <- function(x) {
     do.call(problemset, x)
 }
 
-roman <- function(x) tolower(as.roman(x))
+#' Formatting functions
+#'
+#' Some functions useful for formatting integers for lists:
+#' \describe{
+#' \item{\code{roman}}{i, ii, iii, iv, ...}
+#' \item{\code{Roman}}{I, II, III, IV, ...}
+#' \item{\code{alph}}{a, b, c, d, ..., z, aa, bb, ...}
+#' \item{\code{Alph}}{A, B, C, D, ..., Z, AA, BB, ...}
+#' }
+#'
+#' @param x A vector of integers.
+#' @rdname formatting_functions
+#' @export
+#' @examples
+#' x <- 1:10
+#' roman(x)
+#' Roman(x)
+#' alph(x)
+#' Alph(x)
+roman <- function(x) tolower(as.roman(as.integer(x)))
 
-Roman <- function(x) as.roman(x)
+#' @rdname formatting_functions
+#' @export
+Roman <- function(x) as.character(as.roman(as.integer(x)))
 
+#' @rdname formatting_functions
+#' @export
 alph <- function(x) {
+    x <- as.integer(x)
     i <- ((x - 1) %% 26) + 1
     n <- ((x - 1) %/% 26) + 1
     unname(mapply(function(ltr, n) paste0(rep(ltr, n), collapse = ""),
                   letters[i], n))
 }
 
+#' @rdname formatting_functions
+#' @export
 Alph <- function(x) {
+    x <- as.integer(x)
     i <- ((x - 1) %% 26) + 1
     n <- ((x - 1) %/% 26) + 1
     unname(mapply(function(ltr, n) paste0(rep(ltr, n), collapse = ""),

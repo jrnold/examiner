@@ -9,6 +9,8 @@ problemblock(problems, pretext = "", posttext = "", randomizable = FALSE)
 \method{format}{problemblock}(x, shuffle_problems = FALSE,
   shuffle_answers = FALSE, show_solutions = FALSE,
   tpl_problemblock = examiner_opts$tpl_problemblock,
+  tpl_problem = examiner_opts$tpl_problem,
+  tpl_answerlist = examiner_opts$tpl_answerlist,
   format_cnt_problem_1 = identity, cnt_problem_1 = 1L,
   counter = Counter(), .debug = FALSE, ...)
 }

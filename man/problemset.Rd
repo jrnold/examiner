@@ -8,7 +8,10 @@ problemset(problems, pretext = "", posttext = "")
 
 \method{format}{problemset}(x, shuffle_problems = FALSE,
   shuffle_answers = FALSE, show_solutions = FALSE,
-  tpl_problemset = examiner_opts$tpl_problemset, .debug = FALSE, ...)
+  tpl_problemset = examiner_opts$tpl_problemset,
+  tpl_problemblock = examiner_opts$tpl_problemblock,
+  tpl_problem = examiner_opts$tpl_problem,
+  tpl_answerlist = examiner_opts$tpl_answerlist, .debug = FALSE, ...)
 }
 \arguments{
 \item{problems}{list of problems}
