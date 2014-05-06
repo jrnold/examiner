@@ -6,6 +6,10 @@ library("stringr")
 
 An lightweight, flexible R package for generating multiple choice exams.
 
+This package is still **alpha**.
+It came out of code I used to write multiple-choice exams for a course I was teaching.
+It could change at any time, but I thought it may be useful to others, so I packaged it and put it here.
+
 # Usage
 
 Questions are written and stored in a yaml file,
