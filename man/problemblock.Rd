@@ -33,6 +33,10 @@ problemblock(problems, pretext = "", posttext = "", randomizable = FALSE)
 
 \item{tpl_problemblock}{Whisker template to use when rendering the object.}
 
+\item{tpl_answerlist}{The template to use to render the object.}
+
+\item{tpl_problem}{Whisker template to use when rendering the object.}
+
 \item{format_cnt_problem_1}{A function used to format}
 
 \item{cnt_problem_1}{Problem number. This will usually be set by \code{format.problem}.}

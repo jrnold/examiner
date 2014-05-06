@@ -2,7 +2,7 @@
 \name{answerlist}
 \alias{answerlist}
 \alias{format.answerlist}
-\title{Create an \code{answerlist} object}
+\title{\code{answerlist} objects}
 \usage{
 answerlist(x)
 
@@ -27,7 +27,7 @@ answerlist(x)
 An object of class \code{answerlist}.
 }
 \description{
-Create an \code{answerlist} object
+\code{answerlist} objects
 }
 \details{
 The class \code{"answerlist"} is a \code{"data.frame"} with columns:

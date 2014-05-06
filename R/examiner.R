@@ -138,10 +138,10 @@ examiner_opts$latex_header <-
     c("\\usepackage{amsthm,amsmath,enumitem}",
       "\\theoremstyle{definition}\\newtheorem{problem}{Problem}",
       ltxnewenv("problemset", "", ""),
-      ltxnewenv("problemsetpretext", "\\par\\newline", ""),
-      ltxnewenv("problemsetposttext", "\\par\\newline", ""),
+      ltxnewenv("problemsetpretext", "\\par", ""),
+      ltxnewenv("problemsetposttext", "\\par", ""),
       ltxnewenv("problems", "\\par\\noindent", ""),
-      ltxnewenv("problemtext", "\\par\\noindent", ""),
+      ltxnewenv("problemtext", "\\par", ""),
       ltxnewenv("solution", "\\color{blue}", ""),
       ltxnewenv("problemblock", "", ""),
       ltxnewenv("correctanswer", "\\color{blue} (*) ", ""),      
@@ -162,7 +162,7 @@ examiner_latex_header <- function() {
 }
 
 
-#' Create an \code{answerlist} object
+#' \code{answerlist} objects
 #'
 #' @details
 #' The class \code{"answerlist"} is a \code{"data.frame"} with columns:
@@ -211,7 +211,7 @@ shuffle_answers <- function(x) {
     x
 }
 
-#' Create a \code{problem} object
+#' \code{problem} objects
 #'
 #' @details
 #' The class \code{"problem"} is a \code{"list"} with elements,
@@ -262,6 +262,7 @@ problem <- function(text = "",
 #' @param shuffle_answers Shuffle answers?
 #' @param show_solutions Display the solutions to the answers?
 #' @param tpl_problem Whisker template to use when rendering the object.
+#' @param tpl_answerlist The template to use to render the object.
 #' @param counter A counter to keep track of the number of problems.
 #' @param cnt_problem_1 A counter for the top level \code{problem} and \code{problemset} objects.
 #' @param cnt_problem_2 \code{NULL} if the problem is not in a \code{problemblock}. Otherwise, the number within that \code{problemblock}.
@@ -275,6 +276,7 @@ format.problem <- function(x,
                            shuffle_answers = FALSE,
                            show_solutions = FALSE,
                            tpl_problem = examiner_opts$tpl_problem,
+                           tpl_answerlist = examiner_opts$tpl_answerlist,
                            counter = Counter(),
                            cnt_problem_2 = NULL,
                            cnt_problem_1 = 1L,
@@ -298,7 +300,9 @@ format.problem <- function(x,
                cnt_problem_0 = cnt_problem_0,
                cnt_problem_1_fmt = cnt_problem_1_fmt,
                cnt_problem_2_fmt = cnt_problem_2_fmt,
-               cnt_problem_0_fmt = cnt_problem_0_fmt, ...)
+               cnt_problem_0_fmt = cnt_problem_0_fmt,
+               tpl_answerlist = tpl_answerlist,
+               ...)
     data <- x
     data[["show_solutions"]] <- show_solutions
     data[["cnt_problem_1"]] <- cnt_problem_1
@@ -344,6 +348,8 @@ problemblock <- function(problems, pretext = "", posttext = "", randomizable = F
 #' @param shuffle_answers Shuffle answers?
 #' @param show_solutions Display the solutions to the answers?
 #' @param tpl_problemblock Whisker template to use when rendering the object.
+#' @param tpl_answerlist The template to use to render the object.
+#' @param tpl_problem Whisker template to use when rendering the object.
 #' @param format_cnt_problem_1 A function used to format 
 #' @param cnt_problem_1 Problem number. This will usually be set by \code{format.problem}.
 #' @param counter Counter object used for keeping track of the total number of problems in a problemset.
@@ -429,6 +435,9 @@ problemset <- function(problems, pretext = "", posttext = "") {
 #' @param shuffle_answers Shuffle answers?
 #' @param show_solutions Display the solutions to the answers?
 #' @param tpl_problemset Whisker template to use when rendering the object.
+#' @param tpl_problem Whisker template to use when rendering the object.
+#' @param tpl_problemblock Whisker template to use when rendering the object.
+#' @param tpl_answerlist The template to use to render the object.
 #' @param .debug Useful for debugging. Shows the data that is passed to the template.
 #' @param ... Used by the template and passed to \code{format.problem} and \code{format.problemblock}.
 #' @export

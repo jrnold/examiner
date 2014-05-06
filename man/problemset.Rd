@@ -30,6 +30,12 @@ problemset(problems, pretext = "", posttext = "")
 
 \item{tpl_problemset}{Whisker template to use when rendering the object.}
 
+\item{tpl_problem}{Whisker template to use when rendering the object.}
+
+\item{tpl_problemblock}{Whisker template to use when rendering the object.}
+
+\item{tpl_answerlist}{The template to use to render the object.}
+
 \item{.debug}{Useful for debugging. Shows the data that is passed to the template.}
 
 \item{...}{Used by the template and passed to \code{format.problem} and \code{format.problemblock}.}

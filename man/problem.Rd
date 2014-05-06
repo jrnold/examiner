@@ -2,13 +2,14 @@
 \name{problem}
 \alias{format.problem}
 \alias{problem}
-\title{Create a \code{problem} object}
+\title{\code{problem} objects}
 \usage{
 problem(text = "", answers = character(), solution = "", correct = 1L,
   first = 0L, last = 0L, randomizable = TRUE)
 
 \method{format}{problem}(x, shuffle_answers = FALSE, show_solutions = FALSE,
-  tpl_problem = examiner_opts$tpl_problem, counter = Counter(),
+  tpl_problem = examiner_opts$tpl_problem,
+  tpl_answerlist = examiner_opts$tpl_answerlist, counter = Counter(),
   cnt_problem_2 = NULL, cnt_problem_1 = 1L,
   format_cnt_problem_1 = identity, format_cnt_problem_2 = identity,
   format_cnt_problem_0 = identity, .debug = FALSE, ...)
@@ -36,6 +37,8 @@ problem(text = "", answers = character(), solution = "", correct = 1L,
 
 \item{tpl_problem}{Whisker template to use when rendering the object.}
 
+\item{tpl_answerlist}{The template to use to render the object.}
+
 \item{counter}{A counter to keep track of the number of problems.}
 
 \item{cnt_problem_1}{A counter for the top level \code{problem} and \code{problemset} objects.}
@@ -56,7 +59,7 @@ problem(text = "", answers = character(), solution = "", correct = 1L,
 An object of class \code{problem}.
 }
 \description{
-Create a \code{problem} object
+\code{problem} objects
 }
 \details{
 The class \code{"problem"} is a \code{"list"} with elements,
