@@ -1,3 +1,7 @@
+```{r echo=FALSE,results='hide'}
+opts_chunk[["set"]](error = FALSE)
+library("stringr")
+```
 # Examiner
 
 An lightweight, flexible R package for generating multiple choice exams.
@@ -5,7 +9,7 @@ An lightweight, flexible R package for generating multiple choice exams.
 # Usage
 
 Questions are written and stored in a yaml file,
-```{r, echo = FALSE}
+```{r, echo = FALSE, comment = ""}
 cat(paste0(readLines(system.file("yaml/questions.yaml", 
                                 package = "examiner")),
     collapse = "\n"))
@@ -14,10 +18,11 @@ cat(paste0(readLines(system.file("yaml/questions.yaml",
 Problems can then be loaded and formatted into LaTeX code.
 This is intended to be used with knitr or Sweave.
 ```{r}
+library("examiner")
 problems <- 
     problemset_from_yaml(system.file("yaml/questions.yaml", 
                                      package = "examiner"))
-format(problems)
+cat(format(problems))
 ```
 There are options to shuffle problems, and answers, and to show the solutions.
 See the package vignette for more examples.

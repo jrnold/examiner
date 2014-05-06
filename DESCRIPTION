@@ -4,9 +4,9 @@ Version: 0.0.1
 Authors@R: "Jeffrey B. Arnold <jeffrey.arnold@gmail.com> [aut, cre]"
 Description: Functions to generate multiple choice exam questions.
 Depends:
-    R (>= 3.1.0)
+    R (>= 3.1.0),
+    methods
 Imports:
-    methods,
     plyr,
     stringr,
     whisker,
